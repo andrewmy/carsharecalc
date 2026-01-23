@@ -128,14 +128,64 @@ def write_png(path: Path, img: list[list[tuple[int, int, int, int]]]) -> None:
 
 
 def crop_center_square(img: list[list[tuple[int, int, int, int]]]) -> list[list[tuple[int, int, int, int]]]:
+  h = len(img)
+  w = len(img[0])
+  if w == h:
+    return img
+  s = min(w, h)
+  x0 = (w - s) // 2
+  y0 = (h - s) // 2
+  return [row[x0 : x0 + s] for row in img[y0 : y0 + s]]
+
+
+def trim_uniform_border(
+    img: list[list[tuple[int, int, int, int]]],
+    *,
+    tol: int = 10,
+) -> list[list[tuple[int, int, int, int]]]:
+    """
+    Trim solid-ish borders that match the corner background color.
+
+    This is meant for logos exported with a large white margin. It only removes
+    full rows/cols whose pixels are all within `tol` of the corner color.
+    """
     h = len(img)
     w = len(img[0])
-    if w == h:
+    if h == 0 or w == 0:
         return img
-    s = min(w, h)
-    x0 = (w - s) // 2
-    y0 = (h - s) // 2
-    return [row[x0 : x0 + s] for row in img[y0 : y0 + s]]
+
+    corners = [img[0][0], img[0][w - 1], img[h - 1][0], img[h - 1][w - 1]]
+    bg = tuple(int(sum(c[i] for c in corners) / 4) for i in range(4))
+
+    def is_bg(px: tuple[int, int, int, int]) -> bool:
+        return (
+            abs(px[0] - bg[0]) <= tol
+            and abs(px[1] - bg[1]) <= tol
+            and abs(px[2] - bg[2]) <= tol
+            and abs(px[3] - bg[3]) <= tol
+        )
+
+    top = 0
+    while top < h and all(is_bg(px) for px in img[top]):
+        top += 1
+
+    bottom = h - 1
+    while bottom >= top and all(is_bg(px) for px in img[bottom]):
+        bottom -= 1
+
+    left = 0
+    while left < w and all(is_bg(img[y][left]) for y in range(top, bottom + 1)):
+        left += 1
+
+    right = w - 1
+    while right >= left and all(is_bg(img[y][right]) for y in range(top, bottom + 1)):
+        right -= 1
+
+    if top == 0 and bottom == h - 1 and left == 0 and right == w - 1:
+        return img
+    if bottom < top or right < left:
+        return img
+    return [row[left : right + 1] for row in img[top : bottom + 1]]
 
 
 def resample_square(img: list[list[tuple[int, int, int, int]]], out_size: int) -> list[list[tuple[int, int, int, int]]]:
@@ -334,13 +384,17 @@ def main() -> None:
     args = ap.parse_args()
 
     src = read_png_rgba(args.source_png)
+    src = trim_uniform_border(src, tol=10)
     src = crop_center_square(src)
 
     out_dir: Path = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "assets").mkdir(parents=True, exist_ok=True)
 
     img16 = resample_square(src, 16)
     img32 = resample_square(src, 32)
+    img64 = resample_square(src, 64)
+    img128 = resample_square(src, 128)
     img180 = resample_square(src, 180)
     img192 = resample_square(src, 192)
     img512 = resample_square(src, 512)
@@ -350,12 +404,16 @@ def main() -> None:
     write_png(out_dir / "apple-touch-icon.png", img180)
     write_png(out_dir / "icon-192.png", img192)
     write_png(out_dir / "icon-512.png", img512)
+    write_png(out_dir / "assets" / "logo.png", img128)
+    write_png(out_dir / "assets" / "logo-64.png", img64)
 
     print("Wrote:", out_dir / "favicon.ico")
     print("Wrote:", out_dir / "favicon-32.png")
     print("Wrote:", out_dir / "apple-touch-icon.png")
     print("Wrote:", out_dir / "icon-192.png")
     print("Wrote:", out_dir / "icon-512.png")
+    print("Wrote:", out_dir / "assets" / "logo.png")
+    print("Wrote:", out_dir / "assets" / "logo-64.png")
 
 
 if __name__ == "__main__":
