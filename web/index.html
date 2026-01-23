@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0f17" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fbfaf9" media="(prefers-color-scheme: light)" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="./favicon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
+    <title>Car Share Trip Calculator (Riga)</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__title">Trip Calculator</div>
+          <div class="brand__subtitle">Riga · CarGuru · CityBee · Bolt Drive</div>
+        </div>
+        <div class="topbar__actions">
+          <button id="btn-data" class="btn btn--ghost" type="button">Data</button>
+          <button id="btn-reset" class="btn btn--ghost" type="button" title="Reset inputs">Reset</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <div class="card__head">
+          <h1 class="h1">Estimate a trip</h1>
+          <p class="muted">
+            One-way assumed. If you plan to return, add return time/distance to the inputs.
+            Night minutes are computed using your browser timezone (set it to Europe/Riga for best results).
+          </p>
+        </div>
+
+        <form id="inputs" class="grid" autocomplete="off">
+          <label class="field">
+            <span class="field__label">Start (Riga time)</span>
+            <input id="start" type="datetime-local" required />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Total time (HH:MM)</span>
+            <input id="totalTime" type="text" inputmode="numeric" placeholder="1:30" value="1:00" required />
+            <span class="field__hint">Supports 24h+ (e.g., 36:00)</span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Parking / standstill (HH:MM)</span>
+            <input id="parkingTime" type="text" inputmode="numeric" placeholder="0:15" value="0:00" />
+            <span class="field__hint">≤ total time</span>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Distance (km)</span>
+            <input id="distanceKm" type="number" min="0" step="0.1" value="10" required />
+            <span class="field__hint">Rounded up to next km</span>
+          </label>
+
+          <label class="field field--check">
+            <input id="airport" type="checkbox" />
+            <span class="field__label">Airport zone (either pickup or dropoff)</span>
+            <span class="field__hint">Some providers differ by pickup vs dropoff (future)</span>
+          </label>
+
+          <div class="field field--inline">
+            <div>
+              <div class="field__label">Fuel price (€/L)</div>
+              <input id="fuelPrice" type="number" min="0" step="0.01" value="1.70" />
+            </div>
+            <div>
+              <div class="field__label">Consumption (L/100km)</div>
+              <input id="consumption" type="number" min="0" step="0.1" value="7.5" />
+            </div>
+            <div class="field__hint">
+              Only used when an option has <code>fuel_included = FALSE</code>.
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card__head card__head--row">
+          <div>
+            <h2 class="h2">Results</h2>
+            <p id="summary" class="muted"></p>
+          </div>
+          <div class="filters">
+            <input id="q" class="input" type="search" placeholder="Filter (provider / car / option)..." />
+            <select id="providerFilter" class="input">
+              <option value="">All providers</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="errors" class="alert alert--warn hidden"></div>
+
+        <div class="tableWrap">
+          <table class="table" id="resultsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Provider</th>
+                <th>Vehicle</th>
+                <th>Option</th>
+                <th class="num">Total (€)</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="dataDialog" class="dialog">
+      <form method="dialog" class="dialog__inner">
+        <div class="dialog__head">
+          <div>
+            <div class="h2">Data</div>
+            <div class="muted">Paste TSV to override in this browser (saved to localStorage).</div>
+          </div>
+          <button class="btn btn--ghost" value="cancel" aria-label="Close">Close</button>
+        </div>
+
+        <div class="dialog__body">
+          <div class="tabs">
+            <button class="tab is-active" type="button" data-tab="providers">Providers</button>
+            <button class="tab" type="button" data-tab="vehicles">Vehicles</button>
+            <button class="tab" type="button" data-tab="options">Options</button>
+          </div>
+
+          <div class="tabPanel is-active" data-panel="providers">
+            <p class="muted">Columns: <code>provider_id, provider_name, night_start, night_end</code></p>
+            <textarea id="providersTsv" class="textarea" rows="10"></textarea>
+          </div>
+          <div class="tabPanel" data-panel="vehicles">
+            <p class="muted">Columns: <code>provider_id, vehicle_id, vehicle_name, vehicle_class</code></p>
+            <textarea id="vehiclesTsv" class="textarea" rows="10"></textarea>
+          </div>
+          <div class="tabPanel" data-panel="options">
+            <p class="muted">Columns must match <code>web/data/options.tsv</code> header.</p>
+            <textarea id="optionsTsv" class="textarea" rows="10"></textarea>
+          </div>
+        </div>
+
+        <div class="dialog__foot">
+          <button id="btn-load-defaults" class="btn btn--ghost" type="button">Load defaults</button>
+          <button id="btn-reset-data" class="btn btn--ghost" type="button">Reset saved data</button>
+          <div class="spacer"></div>
+          <button id="btn-save-data" class="btn" type="button">Save &amp; Recalculate</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
