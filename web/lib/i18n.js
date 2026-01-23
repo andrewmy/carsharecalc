@@ -46,7 +46,7 @@ const STRINGS = {
     daily_desc: 'dienas noma',
 
     filter_placeholder: 'Meklēt (kompānija / auto / tarifs)...',
-    filter_snowboard: 'Der snovbords (≥160 cm)',
+    filter_snowboard: 'Der snovbordam (≥160 cm)',
     all_providers: 'Visas kompānijas',
     top_50: 'Top 50',
     top_100: 'Top 100',
