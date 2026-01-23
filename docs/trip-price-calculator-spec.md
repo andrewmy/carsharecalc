@@ -173,7 +173,7 @@ Flags / notes
 3) Create option rows in `web/data/options.tsv` for each tariff/package/daily rental on:
    - CarGuru: `https://carguru.lv/rates`
    - CityBee: `https://citybee.lv/lv/cenas/` and `https://citybee.lv/lv/pakas/`
-   - Bolt: manual from in‑app screens
+   - Bolt: manual from in‑app screens (see `docs/bolt-drive-data-entry.md`)
 4) Update `web/data/*.tsv` (either manually or via scripts):
    - `uv run python scripts/import_vehicles.py`
    - `uv run python scripts/import_options.py`

@@ -13,6 +13,7 @@ Notes:
 
 - This only populates the **vehicle list** (not pricing options).
 - Bolt Drive vehicles are still meant to be added manually as they appear in-app.
+  - Bolt data entry workflow: `docs/bolt-drive-data-entry.md`.
 
 ## Snowboard metadata workflow
 

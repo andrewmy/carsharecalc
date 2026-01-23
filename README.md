@@ -19,6 +19,10 @@ Source-of-truth TSVs (commit changes here):
 - `web/data/vehicles.tsv`
 - `web/data/options.tsv`
 
+Bolt Drive data entry (manual):
+
+- `docs/bolt-drive-data-entry.md`
+
 Update CarGuru/CityBee data (Bolt is manual):
 
 - `uv sync`

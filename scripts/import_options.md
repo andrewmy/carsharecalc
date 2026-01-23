@@ -16,4 +16,5 @@ Run:
 Notes:
 
 - Bolt Drive pricing is still manual (in-app).
+- Bolt data entry workflow: `docs/bolt-drive-data-entry.md`.
 - CityBee “hour/day/week/4 weeks” billing may be caps rather than true packages; we model 1h/1d as packages for now.
