@@ -1,4 +1,4 @@
-# Riga Car‑Share Trip Price Calculator — Spec (MVP)
+# CarShareCalc (Riga) — Spec (MVP)
 
 ## Goal
 Given a planned trip in **Riga, Latvia**, estimate total trip cost across **CarGuru**, **CityBee**, and **Bolt Drive** for **all available vehicles and pricing options** (pay‑as‑you‑go, time+km packages, daily rentals, etc.), including overage fees, then **rank cheapest → most expensive**.
@@ -7,13 +7,14 @@ Given a planned trip in **Riga, Latvia**, estimate total trip cost across **CarG
 - City: **Riga only** (explicitly note future expansion to other cities/zones).
 - Prices: **VAT included** (what a user pays).
 - Promotions/subscriptions: **ignored** (note for future).
-- Output: “expected total”; provide a **breakdown** in a details area.
+- Output: “expected total”; provide a **breakdown** on demand.
 - Zones: single toggle **Airport zone (either pickup or dropoff)**; note future split into two toggles and more zones.
 - Bolt Drive rates: **manual entry** using the same pricing schema.
+- Parking fees as a separate concept: **not modeled** yet (note for future; some daily rentals exclude parking).
 
 ## Inputs
 Required
-- `Start datetime` (Europe/Riga)
+- `Start datetime` (device local time; for Riga accuracy set timezone to Europe/Riga)
 - `Total rental time` (HH:MM)
 - `Trip distance` (km)
 
@@ -28,13 +29,13 @@ User warning
 - Assumes **one‑way**. If returning, user should add return time/distance to inputs.
 
 ## Rounding & Derived Values
-- Minutes billed: **round up to next minute**
+- Time input is HH:MM (minute resolution).
 - Distance billed: **round up to next km**
-- Prices: **round up to €0.01**
+- Prices: **round to €0.01** (standard rounding)
 
 Derived
-- `total_min` = ceil(total time to minutes)
-- `park_min` = ceil(parking time to minutes); `drive_min` = `total_min - park_min`
+- `total_min` = total time in minutes
+- `park_min` = parking time in minutes; `drive_min` = `total_min - park_min`
 - `dist_km` = ceil(distance to km)
 - Provider night minutes computed from `[start_ts, end_ts)` and each provider’s `night_start`, `night_end`.
   - `night_min` = overlap minutes with the nightly interval(s)
@@ -99,43 +100,29 @@ Total = days * daily_price + (optional km overage) + fees + airport + fuel (if n
 ## Fuel Cost
 Apply when an option marks `fuel_included = FALSE`:
 - `fuel_cost = dist_km * (consumption_l_per_100km / 100) * fuel_price_per_l`
-Round up to €0.01 and add to total.
+Round to €0.01 and add to total.
 
-## Google Sheets Implementation (MVP)
-Deliverable: a single Google Sheet with the following tabs.
+## Web App Implementation (current MVP)
+The primary deliverable is the **no-build web app** in `web/` (desktop + mobile).
 
-Repo helpers (optional)
-- `templates/sheets/SETUP.md` provides a fast “copy/paste” build for the sheet.
-- `templates/sheets/apps_script.gs` provides the `NIGHT_MINUTES(...)` custom function used by the templates.
+Run locally:
+- `uv sync`
+- `uv run python -m http.server 8000` → open `http://localhost:8000/web/`
 
-### Tab: `Inputs`
-Cells (suggested)
-- `B2` Start datetime
-- `B3` Total time (HH:MM)
-- `B4` Parking time (HH:MM, default 0)
-- `B5` Distance (km)
-- `B6` Airport zone (TRUE/FALSE)
-- `B8` Fuel price (€/L)
-- `B9` Consumption (L/100km)
-- Computed fields: `total_min`, `park_min`, `dist_km`, plus per‑provider `night_min` (see `Providers`).
+Data:
+- Source-of-truth TSVs live in `templates/sheets/` and are copied into `web/data/` via `uv run python scripts/export_web_data.py`.
+- The app supports local TSV overrides via the “Advanced” dialog (saved in browser localStorage).
 
-### Tab: `Providers`
-Columns
-- `provider_id` (stable key: `carguru`, `citybee`, `bolt`)
-- `provider_name`
-- `night_start` (time)
-- `night_end` (time)
-- `notes`
+Localization:
+- UI supports **LV/EN** with a dropdown; user selection persists in the browser.
+- User selection overrides browser preferences; if no user choice is stored, use browser preferences when available, otherwise fall back to **Latvian**.
+- UI strings are edited in `web/lib/i18n.js` (data-driven vehicle/option names are not translated yet).
 
-### Tab: `Vehicles`
-Columns
-- `provider_id`
-- `vehicle_id` (stable key per provider)
-- `vehicle_name` (what users recognize)
-- `vehicle_class` (optional; future filters)
+Tests:
+- Unit tests use Node’s built-in runner: `npm test`.
 
-### Tab: `Options`
-One row = one purchasable/choosable pricing option for a vehicle.
+## Data Schema (TSV)
+One row in `Options.tsv` represents one purchasable/choosable pricing option for a vehicle.
 
 Core columns
 - IDs: `provider_id`, `vehicle_id`, `option_id`, `option_name`, `option_type` (`PAYG`/`PACKAGE`/`DAILY`)
@@ -171,18 +158,9 @@ Flags / notes
 - `source_url` (for auditability)
 - `notes`
 
-### Tab: `Results`
-Computed output table (one row per `Options` row):
-- provider, vehicle, option, computed total (€, rounded up to 0.01)
-- computed components (fees/time/km/airport/fuel) in hidden/helper columns
-- filter controls (provider/vehicle/type) using built‑in Sheets filters
-- ranked list: sort by computed total ascending
-
-### Tab: `Details`
-User picks an `option_id` (dropdown) and the sheet shows:
-- total price
-- breakdown: fees, time, distance, airport, fuel
-- the exact minutes/km used and included/overage
+## Legacy: Google Sheets templates
+This repo still contains sheet templates under `templates/sheets/` (and an XLSX generator under `scripts/`) but the web app is the main product now. For Sheets setup, see:
+- `templates/sheets/SETUP.md`
 
 ## Data Entry Workflow (Rates)
 1) Add/verify provider night windows in `Providers`.
@@ -191,11 +169,12 @@ User picks an `option_id` (dropdown) and the sheet shows:
    - CarGuru: `https://carguru.lv/rates`
    - CityBee: `https://citybee.lv/lv/cenas/` and `https://citybee.lv/lv/pakas/`
    - Bolt: manual from in‑app screens
-4) Results auto‑recompute and re‑rank.
+4) Export into the web app: `uv run python scripts/export_web_data.py`
 
 ## Future Enhancements
 - Split “Airport zone” into `pickup_at_airport` and `dropoff_at_airport`; add multiple zones.
 - Add car class/model selector and city selector (rates can differ).
+- Add more languages/locales.
 - Add discounts/subscriptions/promos and minimum/maximum caps where applicable.
 - Improve parking timeline modeling (parking at end vs explicit parking intervals).
 - Optional package stacking (explicitly off for MVP).
