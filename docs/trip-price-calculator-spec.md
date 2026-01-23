@@ -192,3 +192,4 @@ Flags / notes
 - Add discounts/subscriptions/promos and minimum/maximum caps where applicable.
 - Improve parking timeline modeling (parking at end vs explicit parking intervals).
 - Optional package stacking (explicitly off for MVP).
+- Add branch protection required checks (e.g., require `npm test` to pass) so deploy-to-Pages is effectively gated even if CI/deploy workflows are split.
