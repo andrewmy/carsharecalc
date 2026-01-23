@@ -1,6 +1,6 @@
 {
-  "name": "Trip Calculator (Riga)",
-  "short_name": "TripCalc",
+  "name": "CarShareCalc (Riga)",
+  "short_name": "CarShareCalc",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -21,4 +21,3 @@
     }
   ]
 }
-
