@@ -18,6 +18,12 @@ Refreshes `web/data/options.tsv` from public sources (CarGuru + CityBee) and kee
 
 - `uv run python scripts/import_options.py`
 
+## `snowboard_queue.py`
+
+Prints a PR-ready checklist of vehicles where `snowboard_ok` is blank in `web/data/vehicles.tsv`.
+
+- `uv run python scripts/snowboard_queue.py`
+
 ## `generate_favicon.py`
 
 Generates app icons in `web/` (favicon + PWA/mobile PNGs).
