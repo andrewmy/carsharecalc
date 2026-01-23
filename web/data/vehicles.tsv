@@ -1,5 +1,6 @@
 provider_id	vehicle_id	vehicle_name	vehicle_class	snowboard_ok	snowboard_source_url
 bolt	bolt_yaris_cross	Toyota Yaris Cross		TRUE	https://en.wikipedia.org/wiki/Toyota_Yaris_Cross
+bolt	bolt_vw_golf_diesel	VW Golf (Diesel)		FALSE	https://en.wikipedia.org/wiki/Volkswagen_Golf
 carguru	carguru_37	Lucky Ride cars		FALSE	https://carguru.lv
 carguru	carguru_15	Nissan Juke		FALSE	https://en.wikipedia.org/wiki/Nissan_Juke
 carguru	carguru_16	Nissan Qashqai		TRUE	https://en.wikipedia.org/wiki/Nissan_Qashqai
