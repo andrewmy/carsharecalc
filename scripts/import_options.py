@@ -375,7 +375,8 @@ def write_tsv(path: Path, header: list[str], rows: list[dict[str, str]]) -> None
 
 def main(argv: list[str]) -> int:
     root = Path(__file__).resolve().parents[1]
-    options_path = root / "templates" / "sheets" / "Options.tsv"
+    options_path = root / "web" / "data" / "options.tsv"
+    options_path.parent.mkdir(parents=True, exist_ok=True)
 
     header, existing_rows = read_tsv(options_path)
     if not header:

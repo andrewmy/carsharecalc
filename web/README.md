@@ -20,6 +20,9 @@ The app loads TSV data from `web/data/`:
 - `web/data/vehicles.tsv`
 - `web/data/options.tsv`
 
-Regenerate these from the sheet templates:
+Update data:
 
-- `uv run python scripts/export_web_data.py`
+- Edit the TSVs directly (commit changes), or
+- Pull the latest CarGuru/CityBee lists into `web/data/`:
+  - `uv run python scripts/import_vehicles.py`
+  - `uv run python scripts/import_options.py`

@@ -1,5 +1,0 @@
-provider_id	provider_name	night_start	night_end	notes
-carguru	CarGuru	22:00	06:00	Update from carguru.lv if different
-citybee	CityBee	22:00	06:00	Update from citybee.lv if different
-bolt	Bolt Drive	22:00	06:00	Fill from in-app / assumptions
-

@@ -141,7 +141,8 @@ def write_vehicles(path: Path, header: list[str], vehicles: list[VehicleRow]) ->
 
 def main(argv: list[str]) -> int:
     root = Path(__file__).resolve().parents[1]
-    vehicles_path = root / "templates" / "sheets" / "Vehicles.tsv"
+    vehicles_path = root / "web" / "data" / "vehicles.tsv"
+    vehicles_path.parent.mkdir(parents=True, exist_ok=True)
 
     header, existing = read_existing_vehicles(vehicles_path)
 

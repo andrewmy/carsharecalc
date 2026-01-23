@@ -1,6 +1,6 @@
 # Importing vehicles
 
-Updates `templates/sheets/Vehicles.tsv` by pulling current public vehicle lists:
+Updates `web/data/vehicles.tsv` by pulling current public vehicle lists:
 
 - CityBee: parses the car selector on `https://citybee.lv/lv/cenas/`
 - CarGuru: uses `https://go-rest.carguru.online/public/web/rate/short`

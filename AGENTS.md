@@ -5,10 +5,9 @@
 This repo contains **CarShareCalc**: a no-build web app for estimating trip prices for car sharing in **Riga** (CarGuru, CityBee, Bolt Drive). The UI says “Riga” but the data model is designed for future city/zone expansion.
 
 - `web/`: no-build web app (mobile/desktop)
-  - `web/data/*.tsv`: pricing/vehicles data used by the app
+  - `web/data/*.tsv`: source-of-truth pricing/vehicles data
 - `web/lib/`: pricing engine + TSV parsing + i18n
-- `templates/sheets/*.tsv`: source-of-truth TSVs (editable, versioned; exported into `web/data/`)
-- `scripts/`: data import/export utilities and XLSX generators
+- `scripts/`: data import utilities + asset generation (e.g., icons)
 - `docs/`: spec and notes
 
 ## Build, Test, and Development Commands
@@ -18,8 +17,7 @@ Common commands (from repo root):
 - Install/sync Python deps: `uv sync`
 - Run the app locally: `uv run python -m http.server 8000` → open `http://localhost:8000/web/`
 - Unit tests (Node, no deps): `npm test`
-- Refresh data (CarGuru + CityBee): `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
-- Export TSVs into the web app: `uv run python scripts/export_web_data.py`
+- Refresh data (CarGuru + CityBee) into `web/data/`: `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
 
 ## Python Environment (uv only)
 
@@ -36,7 +34,7 @@ Common commands (from repo root):
 
 ## Data & Updates (Rates)
 
-- Source-of-truth lives in `templates/sheets/*.tsv`; the web app consumes the exported `web/data/*.tsv`.
+- Source-of-truth lives in `web/data/*.tsv`.
 - Bolt Drive data is often manual (in-app); add new vehicles/options by appending TSV rows.
 - The app supports local overrides via “Advanced” (TSV pasted into a dialog; saved to `localStorage`).
 

@@ -1,6 +1,6 @@
 # Importing options (rates)
 
-Updates `templates/sheets/Options.tsv` by pulling current public pricing data:
+Updates `web/data/options.tsv` by pulling current public pricing data:
 
 - CityBee: parses the built-in calculator car list on `https://citybee.lv/lv/cenas/` and generates:
   - PAYG per-minute + per-km options

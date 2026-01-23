@@ -169,7 +169,7 @@ export function computeOptionPrice(ctx, option) {
     includedMin = z('included_min');
     overMin = Math.max(0, ctx.totalMin - includedMin);
 
-    // Overage minute rate: blended (Sheets MVP approach).
+    // Overage minute rate: blended (MVP approach).
     blendedRate = ctx.totalMin > 0 ? (paygTimeEur / ctx.totalMin) : 0;
     timeRawEur = overMin * blendedRate;
     timeEur = timeRawEur;

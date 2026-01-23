@@ -83,7 +83,7 @@ Total = package price + fees + overage + airport + fuel (if not included)
   - compute the trip’s **blended per‑minute rate** from PAYG time charges:
     - `blended_min_rate = payg_time_eur / total_min`
   - `over_time_eur = over_min * blended_min_rate`
-  - This is equivalent to proportional allocation across minute categories, and is much simpler to implement in Sheets.
+  - This is equivalent to proportional allocation across minute categories, and keeps the MVP simple.
   - (future: exact timeline allocation or min/max bounds)
 
 Important: show “effective trip cost” even if usage is far below included amounts (e.g., 1 km trip in 100 km pack costs full pack price).
@@ -110,8 +110,8 @@ Run locally:
 - `uv run python -m http.server 8000` → open `http://localhost:8000/web/`
 
 Data:
-- Source-of-truth TSVs live in `templates/sheets/` and are copied into `web/data/` via `uv run python scripts/export_web_data.py`.
-- The app supports local TSV overrides via the “Advanced” dialog (saved in browser localStorage).
+- Source-of-truth TSVs live in `web/data/` and are committed to the repo.
+- The app supports local TSV overrides via the “Advanced” dialog (saved in browser localStorage; not shared).
 
 Localization:
 - UI supports **LV/EN** with a dropdown; user selection persists in the browser.
@@ -158,18 +158,19 @@ Flags / notes
 - `source_url` (for auditability)
 - `notes`
 
-## Legacy: Google Sheets templates
-This repo still contains sheet templates under `templates/sheets/` (and an XLSX generator under `scripts/`) but the web app is the main product now. For Sheets setup, see:
-- `templates/sheets/SETUP.md`
+## Non-goals
+- Not specified yet.
 
 ## Data Entry Workflow (Rates)
-1) Add/verify provider night windows in `Providers`.
-2) Add vehicles in `Vehicles`.
-3) Create option rows in `Options` for each tariff/package/daily rental on:
+1) Add/verify provider night windows in `web/data/providers.tsv`.
+2) Add vehicles in `web/data/vehicles.tsv`.
+3) Create option rows in `web/data/options.tsv` for each tariff/package/daily rental on:
    - CarGuru: `https://carguru.lv/rates`
    - CityBee: `https://citybee.lv/lv/cenas/` and `https://citybee.lv/lv/pakas/`
    - Bolt: manual from in‑app screens
-4) Export into the web app: `uv run python scripts/export_web_data.py`
+4) Update `web/data/*.tsv` (either manually or via scripts):
+   - `uv run python scripts/import_vehicles.py`
+   - `uv run python scripts/import_options.py`
 
 ## Future Enhancements
 - Split “Airport zone” into `pickup_at_airport` and `dropoff_at_airport`; add multiple zones.

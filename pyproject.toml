@@ -4,6 +4,4 @@ version = "0.1.0"
 description = "Trip price calculator (Riga) for car sharing providers"
 requires-python = ">=3.12"
 dependencies = [
-  "openpyxl>=3.1.2",
 ]
-
