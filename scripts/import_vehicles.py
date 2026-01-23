@@ -8,12 +8,30 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 
+DEFAULT_VEHICLES_HEADER = [
+    "provider_id",
+    "vehicle_id",
+    "vehicle_name",
+    "vehicle_class",
+    "snowboard_ok",
+    "snowboard_source_url",
+]
+
+
 @dataclass(frozen=True)
 class VehicleRow:
     provider_id: str
     vehicle_id: str
     vehicle_name: str
     vehicle_class: str = ""
+
+    def as_dict(self) -> dict[str, str]:
+        return {
+            "provider_id": self.provider_id,
+            "vehicle_id": self.vehicle_id,
+            "vehicle_name": self.vehicle_name,
+            "vehicle_class": self.vehicle_class,
+        }
 
 
 def fetch_text(url: str) -> str:
@@ -110,33 +128,36 @@ def parse_carguru_vehicles_from_rate_short(obj: object) -> list[VehicleRow]:
     return vehicles
 
 
-def read_existing_vehicles(path: Path) -> tuple[list[str], dict[tuple[str, str], VehicleRow]]:
+def read_existing_vehicles(path: Path) -> tuple[list[str], dict[tuple[str, str], dict[str, str]]]:
     if not path.exists():
-        return (["provider_id", "vehicle_id", "vehicle_name", "vehicle_class"], {})
+        return (list(DEFAULT_VEHICLES_HEADER), {})
+
     with path.open("r", encoding="utf-8") as f:
-        rows = list(csv.reader(f, delimiter="\t"))
-    if not rows:
-        return (["provider_id", "vehicle_id", "vehicle_name", "vehicle_class"], {})
-    header = rows[0]
-    data: dict[tuple[str, str], VehicleRow] = {}
-    for r in rows[1:]:
-        if not r or len(r) < 3:
-            continue
-        provider_id = r[0].strip()
-        vehicle_id = r[1].strip()
-        vehicle_name = r[2].strip()
-        vehicle_class = (r[3].strip() if len(r) >= 4 else "")
-        if provider_id and vehicle_id:
-            data[(provider_id, vehicle_id)] = VehicleRow(provider_id, vehicle_id, vehicle_name, vehicle_class)
+        reader = csv.DictReader(f, delimiter="\t")
+        header = list(reader.fieldnames or [])
+
+        # Preserve any existing columns, but ensure known columns exist (append-only).
+        for col in DEFAULT_VEHICLES_HEADER:
+            if col not in header:
+                header.append(col)
+
+        data: dict[tuple[str, str], dict[str, str]] = {}
+        for r in reader:
+            provider_id = (r.get("provider_id") or "").strip()
+            vehicle_id = (r.get("vehicle_id") or "").strip()
+            if not provider_id or not vehicle_id:
+                continue
+            data[(provider_id, vehicle_id)] = dict(r)
+
     return (header, data)
 
 
-def write_vehicles(path: Path, header: list[str], vehicles: list[VehicleRow]) -> None:
+def write_vehicles(path: Path, header: list[str], vehicles: list[dict[str, str]]) -> None:
     with path.open("w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f, delimiter="\t")
-        w.writerow(header)
+        w = csv.DictWriter(f, fieldnames=header, delimiter="\t", lineterminator="\n")
+        w.writeheader()
         for v in vehicles:
-            w.writerow([v.provider_id, v.vehicle_id, v.vehicle_name, v.vehicle_class])
+            w.writerow({k: v.get(k, "") for k in header})
 
 
 def main(argv: list[str]) -> int:
@@ -154,15 +175,17 @@ def main(argv: list[str]) -> int:
 
     merged = dict(existing)
     for v in citybee_vehicles + carguru_vehicles:
-        merged[(v.provider_id, v.vehicle_id)] = v
+        key = (v.provider_id, v.vehicle_id)
+        prev = merged.get(key, {})
+        merged[key] = {**prev, **v.as_dict()}
 
-    def sort_key(v: VehicleRow) -> tuple[str, str, str]:
-        return (v.provider_id, v.vehicle_class, v.vehicle_name)
+    def sort_key(v: dict[str, str]) -> tuple[str, str, str]:
+        return (v.get("provider_id", ""), v.get("vehicle_class", ""), v.get("vehicle_name", ""))
 
     out = sorted(merged.values(), key=sort_key)
     write_vehicles(vehicles_path, header, out)
 
-    print(f"Wrote {vehicles_path} ({len(out)} vehicles)")
+    print(f"Wrote {vehicles_path} ({len(out)} vehicles; preserved extra columns)")
     return 0
 
 
