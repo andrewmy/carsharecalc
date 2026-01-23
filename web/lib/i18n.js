@@ -46,6 +46,7 @@ const STRINGS = {
     daily_desc: 'dienas noma',
 
     filter_placeholder: 'Meklēt (kompānija / auto / tarifs)...',
+    filter_snowboard: 'Der snovbordam (≥160 cm)',
     all_providers: 'Visas kompānijas',
     top_50: 'Top 50',
     top_100: 'Top 100',
@@ -129,7 +130,7 @@ const STRINGS = {
     tab_vehicles: 'Auto',
     tab_options: 'Tarifi',
     cols_providers: 'Kolonnas: provider_id, provider_name, night_start, night_end',
-    cols_vehicles: 'Kolonnas: provider_id, vehicle_id, vehicle_name, vehicle_class',
+    cols_vehicles: 'Kolonnas: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_ok, snowboard_source_url',
     cols_options: 'Kolonnām jāatbilst web/data/options.tsv virsrakstam.',
     adv_load_defaults: 'Ielādēt noklusējumus',
     adv_reset_saved: 'Dzēst saglabātos datus',
@@ -182,6 +183,7 @@ const STRINGS = {
     daily_desc: 'daily rental',
 
     filter_placeholder: 'Filter (provider / car / option)...',
+    filter_snowboard: 'Fits snowboard (160+ cm)',
     all_providers: 'All providers',
     top_50: 'Top 50',
     top_100: 'Top 100',
@@ -257,7 +259,7 @@ const STRINGS = {
     tab_vehicles: 'Vehicles',
     tab_options: 'Options',
     cols_providers: 'Columns: provider_id, provider_name, night_start, night_end',
-    cols_vehicles: 'Columns: provider_id, vehicle_id, vehicle_name, vehicle_class',
+    cols_vehicles: 'Columns: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_ok, snowboard_source_url',
     cols_options: 'Columns must match web/data/options.tsv header.',
     adv_load_defaults: 'Load defaults',
     adv_reset_saved: 'Reset saved data',

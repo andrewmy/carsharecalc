@@ -163,6 +163,10 @@
             <select id="providerFilter" class="input">
               <option value="" data-i18n="all_providers">All providers</option>
             </select>
+            <label class="filterCheck">
+              <input id="snowboardFilter" type="checkbox" />
+              <span data-i18n="filter_snowboard">Fits snowboard (160+ cm)</span>
+            </label>
             <select id="limit" class="input" title="Show top results" data-i18n-title="limit_title">
               <option value="50" selected data-i18n="top_50">Top 50</option>
               <option value="100" data-i18n="top_100">Top 100</option>
@@ -213,7 +217,7 @@
             <textarea id="providersTsv" class="textarea" rows="10"></textarea>
           </div>
           <div class="tabPanel" data-panel="vehicles">
-            <p class="muted"><span data-i18n="cols_vehicles">Columns: provider_id, vehicle_id, vehicle_name, vehicle_class</span></p>
+            <p class="muted"><span data-i18n="cols_vehicles">Columns: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_ok, snowboard_source_url</span></p>
             <textarea id="vehiclesTsv" class="textarea" rows="10"></textarea>
           </div>
           <div class="tabPanel" data-panel="options">

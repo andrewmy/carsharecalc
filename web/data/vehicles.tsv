@@ -1,40 +1,40 @@
-provider_id	vehicle_id	vehicle_name	vehicle_class
-bolt	bolt_yaris_cross	Toyota Yaris Cross	
-carguru	carguru_37	Lucky Ride cars	
-carguru	carguru_15	Nissan Juke	
-carguru	carguru_16	Nissan Qashqai	
-carguru	carguru_24	Nissan Qashqai e-power	
-carguru	carguru_35	Qashqai C24	
-carguru	carguru_27	Tesla 3 Performance	
-carguru	carguru_26	Tesla Model 3 LR	
-carguru	carguru_25	Tesla Model 3 SR	
-carguru	carguru_29	Tesla Model Y LR	
-carguru	carguru_28	Tesla Model Y SR	
-carguru	carguru_1	Toyota C-HR	
-carguru	carguru_33	Toyota C-HR Mesa	
-carguru	carguru_17	Toyota Corolla HB	
-carguru	carguru_5	Toyota Yaris	
-citybee	citybee_25156	Fiat Ducato	cargo
-citybee	citybee_10156	Ford Transit	cargo
-citybee	citybee_9662	Renault Master	cargo
-citybee	citybee_25309	MG ZS	crossover
-citybee	citybee_10245	Nissan Qashqai	crossover
-citybee	citybee_11384	Seat Ateca	crossover
-citybee	citybee_10277	Toyota C-HR	crossover
-citybee	citybee_25118	Toyota Corolla Cross	crossover
-citybee	citybee_10168	VW T-Roc	crossover
-citybee	citybee_4633	Volkswagen T-Cross	crossover
-citybee	citybee_10278	Volkswagen Taigo	crossover
-citybee	citybee_11117	Ford Focus Wagon	estates
-citybee	citybee_11445	Toyota Corolla Touring	estates
-citybee	citybee_9512	BMW 118i	hatchbacks
-citybee	citybee_10170	Ford Focus	hatchbacks
-citybee	citybee_11421	Ford Puma	hatchbacks
-citybee	citybee_11360	Peugeot 308	hatchbacks
-citybee	citybee_10421	Skoda Fabia	hatchbacks
-citybee	citybee_4627	Toyota Corolla	hatchbacks
-citybee	citybee_4626	Toyota Yaris	hatchbacks
-citybee	citybee_10213	Ford Kuga	suv
-citybee	citybee_10092	Skoda Kamiq	suv
-citybee	citybee_11420	Skoda Karoq	suv
-citybee	citybee_11499	Volkswagen Tiguan	suv
+provider_id	vehicle_id	vehicle_name	vehicle_class	snowboard_ok	snowboard_source_url
+bolt	bolt_yaris_cross	Toyota Yaris Cross		TRUE	https://en.wikipedia.org/wiki/Toyota_Yaris_Cross
+carguru	carguru_37	Lucky Ride cars		FALSE	https://carguru.lv
+carguru	carguru_15	Nissan Juke		FALSE	https://en.wikipedia.org/wiki/Nissan_Juke
+carguru	carguru_16	Nissan Qashqai		TRUE	https://en.wikipedia.org/wiki/Nissan_Qashqai
+carguru	carguru_24	Nissan Qashqai e-power		TRUE	https://en.wikipedia.org/wiki/Nissan_Qashqai
+carguru	carguru_35	Qashqai C24		TRUE	https://en.wikipedia.org/wiki/Nissan_Qashqai
+carguru	carguru_27	Tesla 3 Performance		TRUE	https://en.wikipedia.org/wiki/Tesla_Model_3
+carguru	carguru_26	Tesla Model 3 LR		TRUE	https://en.wikipedia.org/wiki/Tesla_Model_3
+carguru	carguru_25	Tesla Model 3 SR		TRUE	https://en.wikipedia.org/wiki/Tesla_Model_3
+carguru	carguru_29	Tesla Model Y LR		TRUE	https://en.wikipedia.org/wiki/Tesla_Model_Y
+carguru	carguru_28	Tesla Model Y SR		TRUE	https://en.wikipedia.org/wiki/Tesla_Model_Y
+carguru	carguru_1	Toyota C-HR		FALSE	https://en.wikipedia.org/wiki/Toyota_C-HR
+carguru	carguru_33	Toyota C-HR Mesa		FALSE	https://en.wikipedia.org/wiki/Toyota_C-HR
+carguru	carguru_17	Toyota Corolla HB		FALSE	https://en.wikipedia.org/wiki/Toyota_Corolla_(E210)
+carguru	carguru_5	Toyota Yaris		FALSE	https://en.wikipedia.org/wiki/Toyota_Yaris
+citybee	citybee_25156	Fiat Ducato	cargo	TRUE	https://en.wikipedia.org/wiki/Fiat_Ducato
+citybee	citybee_10156	Ford Transit	cargo	TRUE	https://en.wikipedia.org/wiki/Ford_Transit
+citybee	citybee_9662	Renault Master	cargo	TRUE	https://en.wikipedia.org/wiki/Renault_Master
+citybee	citybee_25309	MG ZS	crossover	TRUE	https://en.wikipedia.org/wiki/MG_ZS_(crossover)
+citybee	citybee_10245	Nissan Qashqai	crossover	TRUE	https://en.wikipedia.org/wiki/Nissan_Qashqai
+citybee	citybee_11384	Seat Ateca	crossover	TRUE	https://en.wikipedia.org/wiki/SEAT_Ateca
+citybee	citybee_10277	Toyota C-HR	crossover	FALSE	https://en.wikipedia.org/wiki/Toyota_C-HR
+citybee	citybee_25118	Toyota Corolla Cross	crossover	TRUE	https://en.wikipedia.org/wiki/Toyota_Corolla_Cross
+citybee	citybee_10168	VW T-Roc	crossover	TRUE	https://en.wikipedia.org/wiki/Volkswagen_T-Roc
+citybee	citybee_4633	Volkswagen T-Cross	crossover	FALSE	https://en.wikipedia.org/wiki/Volkswagen_T-Cross
+citybee	citybee_10278	Volkswagen Taigo	crossover	FALSE	https://en.wikipedia.org/wiki/Volkswagen_Taigo
+citybee	citybee_11117	Ford Focus Wagon	estates	TRUE	https://en.wikipedia.org/wiki/Ford_Focus_(fourth_generation)
+citybee	citybee_11445	Toyota Corolla Touring	estates	TRUE	https://en.wikipedia.org/wiki/Toyota_Corolla_(E210)
+citybee	citybee_9512	BMW 118i	hatchbacks	FALSE	https://en.wikipedia.org/wiki/BMW_1_Series
+citybee	citybee_10170	Ford Focus	hatchbacks	FALSE	https://en.wikipedia.org/wiki/Ford_Focus_(fourth_generation)
+citybee	citybee_11421	Ford Puma	hatchbacks	FALSE	https://en.wikipedia.org/wiki/Ford_Puma
+citybee	citybee_11360	Peugeot 308	hatchbacks	FALSE	https://en.wikipedia.org/wiki/Peugeot_308
+citybee	citybee_10421	Skoda Fabia	hatchbacks	FALSE	https://en.wikipedia.org/wiki/%C5%A0koda_Fabia
+citybee	citybee_4627	Toyota Corolla	hatchbacks	FALSE	https://en.wikipedia.org/wiki/Toyota_Corolla_(E210)
+citybee	citybee_4626	Toyota Yaris	hatchbacks	FALSE	https://en.wikipedia.org/wiki/Toyota_Yaris
+citybee	citybee_10213	Ford Kuga	suv	TRUE	https://en.wikipedia.org/wiki/Ford_Kuga
+citybee	citybee_10092	Skoda Kamiq	suv	TRUE	https://en.wikipedia.org/wiki/%C5%A0koda_Kamiq
+citybee	citybee_11420	Skoda Karoq	suv	TRUE	https://en.wikipedia.org/wiki/%C5%A0koda_Karoq
+citybee	citybee_11499	Volkswagen Tiguan	suv	TRUE	https://en.wikipedia.org/wiki/Volkswagen_Tiguan
