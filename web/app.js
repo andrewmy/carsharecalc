@@ -38,6 +38,7 @@ function snapshotInputsFromDom() {
     consumption: $('consumption').value,
     q: $('q').value,
     providerFilter: $('providerFilter').value,
+    limit: $('limit').value,
   };
 }
 
@@ -52,6 +53,7 @@ function applyInputsToDom(snapshot) {
   if (snapshot.consumption != null) $('consumption').value = String(snapshot.consumption);
   if (typeof snapshot.q === 'string') $('q').value = snapshot.q;
   if (typeof snapshot.providerFilter === 'string') $('providerFilter').value = snapshot.providerFilter;
+  if (snapshot.limit != null) $('limit').value = String(snapshot.limit);
 }
 
 function nowLocalDatetimeValue() {
@@ -152,14 +154,20 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
   tbody.innerHTML = '';
 
   const q = (query || '').trim().toLowerCase();
-  const filtered = computed.filter(r => {
+  const matched = computed.filter(r => {
     if (providerFilter && r.provider_id !== providerFilter) return false;
     if (!q) return true;
     const hay = `${r.provider_id} ${r.provider_name} ${r.vehicle_name} ${r.option_name} ${r.option_type}`.toLowerCase();
     return hay.includes(q);
   });
 
-  $('summary').textContent = `${filtered.length} options ranked · distance ${ctx.distKm} km · total ${ctx.totalMin} min (${ctx.days} day block${ctx.days>1?'s':''})`;
+  const limitRaw = Number($('limit').value || 0);
+  const limit = Number.isFinite(limitRaw) ? Math.max(0, Math.trunc(limitRaw)) : 0;
+  const filtered = limit > 0 ? matched.slice(0, limit) : matched;
+
+  const billing = `billing: ${ctx.days} × 24h (caps/packages apply per 24h)`;
+  const shownBit = limit > 0 ? `${filtered.length} shown (${matched.length} match)` : `${filtered.length} shown`;
+  $('summary').textContent = `${shownBit} · ${ctx.distKm} km · ${ctx.totalMin} min · ${billing}`;
 
   let i = 0;
   for (const row of filtered) {
@@ -174,6 +182,7 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
           <div>${escapeHtml(row.option_name)}</div>
           <span class="pill">${escapeHtml(row.option_type)}</span>
         </div>
+        <div class="rowHint muted">${escapeHtml(formatWhyHint(row.breakdown))}</div>
         <details class="details">
           <summary>Breakdown</summary>
           <div class="detailsGrid">
@@ -206,6 +215,36 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
       </div>
     `;
   }
+}
+
+function formatWhyHint(b) {
+  const m = b.meta || {};
+  const optType = String(m.option_type || '').trim().toUpperCase();
+
+  const parts = [];
+  const add = (label, value, extra = '') => {
+    const v = Number(value || 0);
+    if (!(v > 0)) return;
+    const suffix = extra ? ` ${extra}` : '';
+    parts.push(`${label} €${v.toFixed(2)}${suffix}`);
+  };
+
+  if (optType === 'PACKAGE') add('Package', b.plan_eur);
+  else if (optType === 'DAILY') add('Daily', b.plan_eur);
+
+  const capped = String(b.labels?.time || '').toLowerCase().includes('capped') || !!m.cap_applied;
+  add('Time', b.time_eur, capped ? '(capped)' : '');
+  add('Km', b.km_eur);
+  add('Fees', b.fees_eur);
+  add('Airport', b.airport_eur);
+  add('Fuel', b.fuel_eur);
+  if (Number(b.min_added_eur || 0) > 0) add('Minimum', b.min_added_eur, '(applied)');
+
+  // Keep it scannable: show up to 4 parts, then summarize.
+  const max = 4;
+  if (parts.length <= max) return parts.join(' + ') || '—';
+  const head = parts.slice(0, max).join(' + ');
+  return `${head} + ${parts.length - max} more`;
 }
 
 function formatCalcLine(b) {
@@ -363,6 +402,7 @@ function setDefaultInputs() {
   $('consumption').value = '7.5';
   $('q').value = '';
   $('providerFilter').value = '';
+  $('limit').value = '50';
 }
 
 function restoreInputsOrDefaults() {
@@ -380,7 +420,7 @@ function wireInputs(defaults) {
     saveInputsToLocalStorage(snapshotInputsFromDom());
     recalc(defaults);
   };
-  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPrice','consumption','q','providerFilter']) {
+  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPrice','consumption','q','providerFilter','limit']) {
     $(id).addEventListener('input', onChange);
     $(id).addEventListener('change', onChange);
   }

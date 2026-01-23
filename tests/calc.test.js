@@ -96,7 +96,7 @@ test('Bolt package charges overage minutes and km at PAYG rates', () => {
   assert.equal(priced.total_eur, 7.41);
 });
 
-test('CarGuru PAYG/PACKAGE applies service fee fallback when fixed_fee_eur is missing/0', () => {
+test('CarGuru PAYG/PACKAGE applies default service fee when fixed_fee_eur is missing/0', () => {
   const option = {
     provider_id: 'carguru',
     option_id: 'carguru_foo_main_basic_payg',

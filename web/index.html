@@ -21,7 +21,7 @@
           <div class="brand__subtitle">Riga · CarGuru · CityBee · Bolt Drive</div>
         </div>
         <div class="topbar__actions">
-          <button id="btn-data" class="btn btn--ghost" type="button">Data</button>
+          <button id="btn-data" class="btn btn--ghost" type="button" title="Advanced: edit pricing tables">Advanced</button>
           <button id="btn-reset" class="btn btn--ghost" type="button" title="Reset inputs">Reset</button>
         </div>
       </div>
@@ -33,14 +33,15 @@
           <h1 class="h1">Estimate a trip</h1>
           <p class="muted">
             One-way assumed. If you plan to return, add return time/distance to the inputs.
-            Night minutes are computed using your browser timezone (set it to Europe/Riga for best results).
+            Night pricing depends on local time (uses your device timezone).
           </p>
         </div>
 
         <form id="inputs" class="grid" autocomplete="off">
           <label class="field">
-            <span class="field__label">Start (Riga time)</span>
+            <span class="field__label">Start time (your device)</span>
             <input id="start" type="datetime-local" required />
+            <span class="field__hint">For Riga trips, set your device timezone to Europe/Riga for accurate night rates.</span>
           </label>
 
           <label class="field">
@@ -50,9 +51,9 @@
           </label>
 
           <label class="field">
-            <span class="field__label">Parking / standstill (HH:MM)</span>
+            <span class="field__label">Standstill (parked but billed) (HH:MM)</span>
             <input id="parkingTime" type="text" inputmode="numeric" placeholder="0:15" value="0:00" />
-            <span class="field__hint">≤ total time</span>
+            <span class="field__hint">≤ total time · some providers price parking differently</span>
           </label>
 
           <label class="field">
@@ -77,7 +78,7 @@
               <input id="consumption" type="number" min="0" step="0.1" value="7.5" />
             </div>
             <div class="field__hint">
-              Only used when an option has <code>fuel_included = FALSE</code>.
+              Fuel cost is added only when fuel is not included.
             </div>
           </div>
         </form>
@@ -88,11 +89,22 @@
           <div>
             <h2 class="h2">Results</h2>
             <p id="summary" class="muted"></p>
+            <div class="legend">
+              <span class="muted">Legend:</span>
+              <span class="pill">PAYG</span><span class="muted">pay per minute + km</span>
+              <span class="pill">PACKAGE</span><span class="muted">includes time + km (overage applies)</span>
+              <span class="pill">DAILY</span><span class="muted">daily rental</span>
+            </div>
           </div>
           <div class="filters">
             <input id="q" class="input" type="search" placeholder="Filter (provider / car / option)..." />
             <select id="providerFilter" class="input">
               <option value="">All providers</option>
+            </select>
+            <select id="limit" class="input" title="Show top results">
+              <option value="50" selected>Top 50</option>
+              <option value="100">Top 100</option>
+              <option value="0">All</option>
             </select>
           </div>
         </div>
@@ -106,7 +118,7 @@
                 <th>#</th>
                 <th>Provider</th>
                 <th>Vehicle</th>
-                <th>Option</th>
+                <th>Plan</th>
                 <th class="num">Total (€)</th>
               </tr>
             </thead>
@@ -120,13 +132,17 @@
       <form method="dialog" class="dialog__inner">
         <div class="dialog__head">
           <div>
-            <div class="h2">Data</div>
-            <div class="muted">Paste TSV to override in this browser (saved to localStorage).</div>
+            <div class="h2">Advanced (pricing data)</div>
+            <div class="muted">Edit pricing tables in TSV format. Saved locally in this browser (localStorage).</div>
           </div>
           <button class="btn btn--ghost" value="cancel" aria-label="Close">Close</button>
         </div>
 
         <div class="dialog__body">
+          <div class="callout">
+            Use this if you spot a pricing change or want to add a car. To add a car: append a row in <strong>Vehicles</strong>,
+            then add one or more matching rows in <strong>Options</strong> using the same <code>vehicle_id</code>.
+          </div>
           <div class="tabs">
             <button class="tab is-active" type="button" data-tab="providers">Providers</button>
             <button class="tab" type="button" data-tab="vehicles">Vehicles</button>

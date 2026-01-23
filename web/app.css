@@ -164,6 +164,7 @@ body::before{
 .h1{margin:0 0 6px 0;font-size:22px}
 .h2{margin:0 0 4px 0;font-size:16px}
 .muted{color:var(--muted);margin:0}
+.legend{margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px}
 
 .grid{
   display:grid;
@@ -230,6 +231,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 .table td{font-size:13px}
 .table td.num,.table th.num{text-align:right;font-variant-numeric: tabular-nums}
 .rowTitle{display:flex;gap:10px;align-items:center}
+.rowHint{margin-top:4px;font-size:12px;color:var(--muted);line-height:1.35}
 .pill{font-size:12px;border:1px solid var(--border);padding:2px 8px;border-radius:999px;color:var(--muted)}
 .details{
   margin-top:8px;
@@ -276,6 +278,14 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 .dialog__body{padding:12px 14px}
 .dialog__foot{display:flex;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid var(--borderSubtle)}
 .spacer{flex:1}
+.callout{
+  border-radius: var(--radius2);
+  padding:10px 12px;
+  border:1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  margin: 0 0 12px;
+}
 
 .tabs{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .tab{
