@@ -193,6 +193,7 @@ input:focus, select:focus, textarea:focus{
   box-shadow: 0 0 0 3px var(--focusRing);
 }
 .input{min-width:240px}
+.input--sm{min-width:0; width:auto; padding:8px 10px}
 .textarea{width:100%; font-family: var(--mono); font-size: 12px; line-height: 1.35}
 code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 

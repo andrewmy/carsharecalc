@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="lv">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -18,11 +18,15 @@
       <div class="container topbar__inner">
         <div class="brand">
           <div class="brand__title">CarShareCalc</div>
-          <div class="brand__subtitle">Riga · CarGuru · CityBee · Bolt Drive</div>
+          <div class="brand__subtitle" data-i18n="subtitle">Riga · CarGuru · CityBee · Bolt Drive</div>
         </div>
         <div class="topbar__actions">
-          <button id="btn-data" class="btn btn--ghost" type="button" title="Advanced: edit pricing tables">Advanced</button>
-          <button id="btn-reset" class="btn btn--ghost" type="button" title="Reset inputs">Reset</button>
+          <select id="lang" class="input input--sm" aria-label="Language">
+            <option value="lv">LV</option>
+            <option value="en">EN</option>
+          </select>
+          <button id="btn-data" class="btn btn--ghost" type="button" data-i18n="advanced" data-i18n-title="advanced_title">Advanced</button>
+          <button id="btn-reset" class="btn btn--ghost" type="button" data-i18n="reset" data-i18n-title="reset_title">Reset</button>
         </div>
       </div>
     </header>
@@ -30,56 +34,53 @@
     <main class="container">
       <section class="card">
         <div class="card__head">
-          <h1 class="h1">Estimate a trip</h1>
-          <p class="muted">
-            One-way assumed. If you plan to return, add return time/distance to the inputs.
-            Night pricing depends on local time (uses your device timezone).
+          <h1 class="h1" data-i18n="estimate_title">Estimate a trip</h1>
+          <p class="muted"><span data-i18n="estimate_hint">One-way assumed. If you plan to return, add return time/distance to the inputs.</span>
+            <span data-i18n="estimate_hint2">Night pricing depends on local time (uses your device timezone).</span>
           </p>
         </div>
 
         <form id="inputs" class="grid" autocomplete="off">
           <label class="field">
-            <span class="field__label">Start time (your device)</span>
+            <span class="field__label" data-i18n="start_label">Start time (your device)</span>
             <input id="start" type="datetime-local" required />
-            <span class="field__hint">For Riga trips, set your device timezone to Europe/Riga for accurate night rates.</span>
+            <span class="field__hint" data-i18n="start_hint">For Riga trips, set your device timezone to Europe/Riga for accurate night rates.</span>
           </label>
 
           <label class="field">
-            <span class="field__label">Total time (HH:MM)</span>
+            <span class="field__label" data-i18n="total_time_label">Total time (HH:MM)</span>
             <input id="totalTime" type="text" inputmode="numeric" placeholder="1:30" value="1:00" required />
-            <span class="field__hint">Supports 24h+ (e.g., 36:00)</span>
+            <span class="field__hint" data-i18n="total_time_hint">Supports 24h+ (e.g., 36:00)</span>
           </label>
 
           <label class="field">
-            <span class="field__label">Standstill (parked but billed) (HH:MM)</span>
+            <span class="field__label" data-i18n="standstill_label">Standstill (parked but billed) (HH:MM)</span>
             <input id="parkingTime" type="text" inputmode="numeric" placeholder="0:15" value="0:00" />
-            <span class="field__hint">≤ total time · some providers price parking differently</span>
+            <span class="field__hint" data-i18n="standstill_hint">≤ total time · some providers price parking differently</span>
           </label>
 
           <label class="field">
-            <span class="field__label">Distance (km)</span>
+            <span class="field__label" data-i18n="distance_label">Distance (km)</span>
             <input id="distanceKm" type="number" min="0" step="0.1" value="10" required />
-            <span class="field__hint">Rounded up to next km</span>
+            <span class="field__hint" data-i18n="distance_hint">Rounded up to next km</span>
           </label>
 
           <label class="field field--check">
             <input id="airport" type="checkbox" />
-            <span class="field__label">Airport zone (either pickup or dropoff)</span>
-            <span class="field__hint">Some providers differ by pickup vs dropoff (future)</span>
+            <span class="field__label" data-i18n="airport_label">Airport zone (either pickup or dropoff)</span>
+            <span class="field__hint" data-i18n="airport_hint">Some providers differ by pickup vs dropoff (future)</span>
           </label>
 
           <div class="field field--inline">
             <div>
-              <div class="field__label">Fuel price (€/L)</div>
+              <div class="field__label" data-i18n="fuel_price_label">Fuel price (€/L)</div>
               <input id="fuelPrice" type="number" min="0" step="0.01" value="1.70" />
             </div>
             <div>
-              <div class="field__label">Consumption (L/100km)</div>
+              <div class="field__label" data-i18n="consumption_label">Consumption (L/100km)</div>
               <input id="consumption" type="number" min="0" step="0.1" value="7.5" />
             </div>
-            <div class="field__hint">
-              Fuel cost is added only when fuel is not included.
-            </div>
+            <div class="field__hint" data-i18n="fuel_hint">Fuel cost is added only when fuel is not included.</div>
           </div>
         </form>
       </section>
@@ -87,28 +88,28 @@
       <section class="card">
         <div class="card__head card__head--row">
           <div>
-            <h2 class="h2">Results</h2>
+            <h2 class="h2" data-i18n="results_title">Results</h2>
             <p id="summary" class="muted"></p>
             <div class="legend">
-              <span class="muted">Legend:</span>
-              <span class="muted">tap to filter</span>
-              <button class="pill pill--toggle is-active" type="button" data-type="PAYG" aria-pressed="true" title="Toggle PAYG options">PAYG</button>
-              <span class="muted">pay per minute + km</span>
-              <button class="pill pill--toggle is-active" type="button" data-type="PACKAGE" aria-pressed="true" title="Toggle package options">PACKAGE</button>
-              <span class="muted">includes time + km (overage applies)</span>
-              <button class="pill pill--toggle is-active" type="button" data-type="DAILY" aria-pressed="true" title="Toggle daily rentals">DAILY</button>
-              <span class="muted">daily rental</span>
+              <span class="muted" data-i18n="legend">Legend:</span>
+              <span class="muted" data-i18n="tap_to_filter">tap to filter</span>
+              <button class="pill pill--toggle is-active" type="button" data-type="PAYG" aria-pressed="true">PAYG</button>
+              <span class="muted" data-i18n="payg_desc">pay per minute + km</span>
+              <button class="pill pill--toggle is-active" type="button" data-type="PACKAGE" aria-pressed="true">PACKAGE</button>
+              <span class="muted" data-i18n="package_desc">includes time + km (overage applies)</span>
+              <button class="pill pill--toggle is-active" type="button" data-type="DAILY" aria-pressed="true">DAILY</button>
+              <span class="muted" data-i18n="daily_desc">daily rental</span>
             </div>
           </div>
           <div class="filters">
-            <input id="q" class="input" type="search" placeholder="Filter (provider / car / option)..." />
+            <input id="q" class="input" type="search" placeholder="Filter (provider / car / option)..." data-i18n-placeholder="filter_placeholder" />
             <select id="providerFilter" class="input">
-              <option value="">All providers</option>
+              <option value="" data-i18n="all_providers">All providers</option>
             </select>
-            <select id="limit" class="input" title="Show top results">
-              <option value="50" selected>Top 50</option>
-              <option value="100">Top 100</option>
-              <option value="0">All</option>
+            <select id="limit" class="input" title="Show top results" data-i18n-title="limit_title">
+              <option value="50" selected data-i18n="top_50">Top 50</option>
+              <option value="100" data-i18n="top_100">Top 100</option>
+              <option value="0" data-i18n="all">All</option>
             </select>
           </div>
         </div>
@@ -119,11 +120,11 @@
           <table class="table" id="resultsTable">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Provider</th>
-                <th>Vehicle</th>
-                <th>Plan</th>
-                <th class="num">Total (€)</th>
+                <th data-i18n="th_index">#</th>
+                <th data-i18n="th_provider">Provider</th>
+                <th data-i18n="th_vehicle">Vehicle</th>
+                <th data-i18n="th_plan">Plan</th>
+                <th class="num" data-i18n="th_total">Total (€)</th>
               </tr>
             </thead>
             <tbody id="resultsBody"></tbody>
@@ -136,42 +137,39 @@
       <form method="dialog" class="dialog__inner">
         <div class="dialog__head">
           <div>
-            <div class="h2">Advanced (pricing data)</div>
-            <div class="muted">Edit pricing tables in TSV format. Saved locally in this browser (localStorage).</div>
+            <div class="h2" data-i18n="adv_title">Advanced (pricing data)</div>
+            <div class="muted" data-i18n="adv_subtitle">Edit pricing tables in TSV format. Saved locally in this browser (localStorage).</div>
           </div>
-          <button class="btn btn--ghost" value="cancel" aria-label="Close">Close</button>
+          <button class="btn btn--ghost" value="cancel" aria-label="Close" data-i18n="adv_close">Close</button>
         </div>
 
         <div class="dialog__body">
-          <div class="callout">
-            Use this if you spot a pricing change or want to add a car. To add a car: append a row in <strong>Vehicles</strong>,
-            then add one or more matching rows in <strong>Options</strong> using the same <code>vehicle_id</code>.
-          </div>
+          <div class="callout" data-i18n="adv_callout"></div>
           <div class="tabs">
-            <button class="tab is-active" type="button" data-tab="providers">Providers</button>
-            <button class="tab" type="button" data-tab="vehicles">Vehicles</button>
-            <button class="tab" type="button" data-tab="options">Options</button>
+            <button class="tab is-active" type="button" data-tab="providers" data-i18n="tab_providers">Providers</button>
+            <button class="tab" type="button" data-tab="vehicles" data-i18n="tab_vehicles">Vehicles</button>
+            <button class="tab" type="button" data-tab="options" data-i18n="tab_options">Options</button>
           </div>
 
           <div class="tabPanel is-active" data-panel="providers">
-            <p class="muted">Columns: <code>provider_id, provider_name, night_start, night_end</code></p>
+            <p class="muted"><span data-i18n="cols_providers">Columns: provider_id, provider_name, night_start, night_end</span></p>
             <textarea id="providersTsv" class="textarea" rows="10"></textarea>
           </div>
           <div class="tabPanel" data-panel="vehicles">
-            <p class="muted">Columns: <code>provider_id, vehicle_id, vehicle_name, vehicle_class</code></p>
+            <p class="muted"><span data-i18n="cols_vehicles">Columns: provider_id, vehicle_id, vehicle_name, vehicle_class</span></p>
             <textarea id="vehiclesTsv" class="textarea" rows="10"></textarea>
           </div>
           <div class="tabPanel" data-panel="options">
-            <p class="muted">Columns must match <code>web/data/options.tsv</code> header.</p>
+            <p class="muted"><span data-i18n="cols_options">Columns must match web/data/options.tsv header.</span></p>
             <textarea id="optionsTsv" class="textarea" rows="10"></textarea>
           </div>
         </div>
 
         <div class="dialog__foot">
-          <button id="btn-load-defaults" class="btn btn--ghost" type="button">Load defaults</button>
-          <button id="btn-reset-data" class="btn btn--ghost" type="button">Reset saved data</button>
+          <button id="btn-load-defaults" class="btn btn--ghost" type="button" data-i18n="adv_load_defaults">Load defaults</button>
+          <button id="btn-reset-data" class="btn btn--ghost" type="button" data-i18n="adv_reset_saved">Reset saved data</button>
           <div class="spacer"></div>
-          <button id="btn-save-data" class="btn" type="button">Save &amp; Recalculate</button>
+          <button id="btn-save-data" class="btn" type="button" data-i18n="adv_save">Save &amp; Recalculate</button>
         </div>
       </form>
     </dialog>
