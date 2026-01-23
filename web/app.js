@@ -228,7 +228,11 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="muted">${i}</td>
-      <td><span class="pill">${escapeHtml(row.provider_name)}</span></td>
+      <td>
+        <button class="pill pill--link" type="button" data-provider="${escapeHtml(row.provider_id)}" title="Filter by provider">
+          ${escapeHtml(row.provider_name)}
+        </button>
+      </td>
       <td>${escapeHtml(row.vehicle_name)}</td>
       <td>
         <div class="rowTitle">
@@ -391,6 +395,21 @@ function escapeHtml(s) {
     .replaceAll('\r', '&#10;');
 }
 
+function wireClickableProviderPills(defaults) {
+  const tbody = $('resultsBody');
+  tbody.addEventListener('click', (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest('button[data-provider]') : null;
+    if (!btn) return;
+    const providerId = String(btn.dataset.provider || '').trim().toLowerCase();
+    if (!providerId) return;
+
+    const current = ($('providerFilter').value || '').trim().toLowerCase();
+    $('providerFilter').value = current === providerId ? '' : providerId;
+    saveInputsToLocalStorage(snapshotInputsFromDom());
+    recalc(defaults);
+  });
+}
+
 function wireDataDialog(defaults) {
   const dlg = $('dataDialog');
   const btnData = $('btn-data');
@@ -526,6 +545,7 @@ async function main() {
   restoreInputsOrDefaults();
   wireDataDialog(defaults);
   wireOptionTypeToggles(defaults);
+  wireClickableProviderPills(defaults);
   wireInputs(defaults);
   recalc(defaults);
 }
