@@ -27,6 +27,55 @@ function saveInputsToLocalStorage(snapshot) {
   }
 }
 
+function optionTypeButtons() {
+  return Array.from(document.querySelectorAll('.pill--toggle[data-type]'));
+}
+
+function getSelectedOptionTypesFromDom() {
+  const buttons = optionTypeButtons();
+  if (buttons.length === 0) return ['PAYG', 'PACKAGE', 'DAILY'];
+  return buttons
+    .filter((b) => b.classList.contains('is-active'))
+    .map((b) => String(b.dataset.type || '').trim().toUpperCase())
+    .filter(Boolean);
+}
+
+function applySelectedOptionTypesToDom(optionTypes) {
+  const normalized =
+    Array.isArray(optionTypes)
+      ? optionTypes
+      : String(optionTypes || '').split(',');
+  const set = new Set(normalized.map((x) => String(x).trim().toUpperCase()).filter(Boolean));
+
+  const buttons = optionTypeButtons();
+  if (buttons.length === 0) return;
+  for (const b of buttons) {
+    const t = String(b.dataset.type || '').trim().toUpperCase();
+    const active = set.size === 0 ? true : set.has(t);
+    b.classList.toggle('is-active', active);
+    b.setAttribute('aria-pressed', active ? 'true' : 'false');
+  }
+}
+
+function wireOptionTypeToggles(defaults) {
+  const buttons = optionTypeButtons();
+  if (buttons.length === 0) return;
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      const next = !b.classList.contains('is-active');
+      b.classList.toggle('is-active', next);
+      b.setAttribute('aria-pressed', next ? 'true' : 'false');
+
+      // Prevent an empty selection: if user turns off the last one, turn all back on.
+      const selected = getSelectedOptionTypesFromDom();
+      if (selected.length === 0) applySelectedOptionTypesToDom(['PAYG', 'PACKAGE', 'DAILY']);
+
+      saveInputsToLocalStorage(snapshotInputsFromDom());
+      recalc(defaults);
+    });
+  }
+}
+
 function snapshotInputsFromDom() {
   return {
     start: $('start').value,
@@ -39,6 +88,7 @@ function snapshotInputsFromDom() {
     q: $('q').value,
     providerFilter: $('providerFilter').value,
     limit: $('limit').value,
+    optionTypes: getSelectedOptionTypesFromDom(),
   };
 }
 
@@ -54,6 +104,7 @@ function applyInputsToDom(snapshot) {
   if (typeof snapshot.q === 'string') $('q').value = snapshot.q;
   if (typeof snapshot.providerFilter === 'string') $('providerFilter').value = snapshot.providerFilter;
   if (snapshot.limit != null) $('limit').value = String(snapshot.limit);
+  if (snapshot.optionTypes != null) applySelectedOptionTypesToDom(snapshot.optionTypes);
 }
 
 function nowLocalDatetimeValue() {
@@ -154,8 +205,10 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
   tbody.innerHTML = '';
 
   const q = (query || '').trim().toLowerCase();
+  const selectedTypes = new Set(getSelectedOptionTypesFromDom().map((t) => String(t).toUpperCase()));
   const matched = computed.filter(r => {
     if (providerFilter && r.provider_id !== providerFilter) return false;
+    if (selectedTypes.size > 0 && !selectedTypes.has(String(r.option_type || '').toUpperCase())) return false;
     if (!q) return true;
     const hay = `${r.provider_id} ${r.provider_name} ${r.vehicle_name} ${r.option_name} ${r.option_type}`.toLowerCase();
     return hay.includes(q);
@@ -403,6 +456,7 @@ function setDefaultInputs() {
   $('q').value = '';
   $('providerFilter').value = '';
   $('limit').value = '50';
+  applySelectedOptionTypesToDom(['PAYG', 'PACKAGE', 'DAILY']);
 }
 
 function restoreInputsOrDefaults() {
@@ -471,6 +525,7 @@ async function main() {
   const defaults = await loadDefaultData();
   restoreInputsOrDefaults();
   wireDataDialog(defaults);
+  wireOptionTypeToggles(defaults);
   wireInputs(defaults);
   recalc(defaults);
 }
