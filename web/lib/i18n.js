@@ -25,13 +25,13 @@ const STRINGS = {
     total_time_hint: 'Atbalsta >24h (piem., 36:00)',
 
     standstill_label: 'Stāvēšana (noparkots, bet tiek rēķināts) (HH:MM)',
-    standstill_hint: '≤ kopējais laiks · dažiem pakalpojumiem stāvēšana ir citā tarifā',
+    standstill_hint: '≤ kopējais laiks · dažiem stāvēšana ir citā tarifā',
 
     distance_label: 'Attālums (km)',
     distance_hint: 'Noapaļo uz augšu līdz nākamajam km',
 
     airport_label: 'Lidostas zona (paņemšana vai nodošana)',
-    airport_hint: 'Dažiem pakalpojumiem atšķiras paņemšana vs nodošana (nākotnē)',
+    airport_hint: 'Dažiem atšķiras paņemšana vs nodošana (nākotnē)',
 
     fuel_price_label: 'Degvielas cena (€/L)',
     consumption_label: 'Patēriņš (L/100km)',
@@ -45,8 +45,8 @@ const STRINGS = {
     package_desc: 'iekļauts laiks + km (pārsniegums tiek rēķināts)',
     daily_desc: 'dienas noma',
 
-    filter_placeholder: 'Meklēt (pakalpojums / auto / tarifs)...',
-    all_providers: 'Visi pakalpojumi',
+    filter_placeholder: 'Meklēt (kompānija / auto / tarifs)...',
+    all_providers: 'Visas kompānijas',
     top_50: 'Top 50',
     top_100: 'Top 100',
     all: 'Visi',
@@ -55,7 +55,7 @@ const STRINGS = {
     github_aria: 'Atvērt GitHub',
 
     th_index: '#',
-    th_provider: 'Pakalpojums',
+    th_provider: 'Kompānija',
     th_vehicle: 'Auto',
     th_plan: 'Tarifs',
     th_total: 'Kopā (€)',
@@ -111,7 +111,7 @@ const STRINGS = {
     park_night: 'Stāvēšana (nakts):',
 
     // Tooltips
-    tt_filter_provider: 'Filtrēt pēc pakalpojuma',
+    tt_filter_provider: 'Filtrēt pēc kompānijas',
 
     // Errors
     err_start_required: 'Nepieciešams sākuma laiks.',
@@ -125,7 +125,7 @@ const STRINGS = {
     adv_close: 'Aizvērt',
     adv_callout:
       'Izmantojiet, ja cenas mainās vai vēlaties pievienot auto. Lai pievienotu auto: pievienojiet rindu sadaļā “Vehicles”, pēc tam pievienojiet vienu vai vairākas rindas sadaļā “Options” ar to pašu vehicle_id.',
-    tab_providers: 'Pakalpojumi',
+    tab_providers: 'Kompānijas',
     tab_vehicles: 'Auto',
     tab_options: 'Tarifi',
     cols_providers: 'Kolonnas: provider_id, provider_name, night_start, night_end',
