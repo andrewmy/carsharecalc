@@ -2,6 +2,7 @@ provider_id	vehicle_id	vehicle_name	vehicle_class	snowboard_ok	snowboard_source_
 bolt	bolt_yaris_cross	Toyota Yaris Cross		TRUE	https://www.carwow.co.uk/toyota/yaris-cross
 bolt	bolt_vw_golf_diesel	VW Golf (Diesel)		TRUE	https://www.carwow.co.uk/volkswagen/golf
 bolt	bolt_vw_t_cross	VW T-Cross		TRUE	https://www.carwow.co.uk/volkswagen/t-cross
+bolt	bolt_vw_tayron	VW Tayron		TRUE	https://www.carwow.co.uk/volkswagen/tayron
 carguru	carguru_37	Lucky Ride cars		FALSE	https://carguru.lv
 carguru	carguru_15	Nissan Juke		FALSE	https://www.carwow.co.uk/nissan/juke
 carguru	carguru_16	Nissan Qashqai		TRUE	https://www.carwow.co.uk/nissan/qashqai
