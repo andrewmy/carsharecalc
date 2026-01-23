@@ -1,2 +1,3 @@
 .venv
+.uv-cache
 scripts/__pycache__

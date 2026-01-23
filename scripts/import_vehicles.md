@@ -7,10 +7,9 @@ Updates `templates/sheets/Vehicles.tsv` by pulling current public vehicle lists:
 
 Run:
 
-- `. .venv/bin/activate && python scripts/import_vehicles.py`
+- `uv run python scripts/import_vehicles.py`
 
 Notes:
 
 - This only populates the **vehicle list** (not pricing options).
 - Bolt Drive vehicles are still meant to be added manually as they appear in-app.
-

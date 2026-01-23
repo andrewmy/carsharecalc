@@ -2,49 +2,47 @@
 
 ## Project Structure & Module Organization
 
-This repo contains a Google-Sheets-first trip price calculator (Riga) for car sharing providers.
+This repo contains a trip price calculator (Riga) for car sharing providers (CarGuru, CityBee, Bolt Drive).
 
-- `docs/`: specifications and notes (start with `docs/trip-price-calculator-spec.md`)
-- `templates/sheets/`: TSV templates + setup instructions for the Google Sheet
-- `scripts/`: helper scripts (vehicle import, XLSX generation)
+- `web/`: no-build web app (mobile/desktop)
+  - `web/data/*.tsv`: pricing/vehicles data used by the app
+- `templates/sheets/*.tsv`: source-of-truth TSVs (editable, versioned)
+- `scripts/`: data import/export utilities and XLSX generators
+- `docs/`: spec and notes
 
 ## Build, Test, and Development Commands
 
-There is no “app” to run yet; the deliverables are sheet templates and XLSX exports.
+Common commands (from repo root):
 
-Common commands:
+- Install/sync script deps: `uv sync`
+- Run the app locally: `uv run python -m http.server 8000` then open `http://localhost:8000/web/`
+- Run unit tests (Node): `npm test`
+- Refresh data (CarGuru + CityBee): `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
+- Export data for the app: `uv run python scripts/export_web_data.py`
+- Generate XLSX templates: `uv run python scripts/generate_xlsx_template.py --variant auto-night`
 
-- Create a local env (recommended): `python -m venv .venv && . .venv/bin/activate`
-- Generate XLSX (Google Sheets-ready): `python scripts/generate_xlsx_template.py --variant auto-night --embed-sheets-formulas`
-- Generate XLSX (Excel-safe, no embedded Sheets formulas): `python scripts/generate_xlsx_template.py --variant auto-night`
-- Refresh vehicle list (CarGuru + CityBee): `python scripts/import_vehicles.py`
+## Python Environment (uv only)
 
-## Python Environment (venv vs uv)
-
-- Default: `python -m venv .venv` (keep `.venv/` gitignored).
-- `uv` is optional; use it if you want faster installs, but keep scripts runnable with standard Python.
-- See `scripts/README.md` for script dependencies and usage.
+- This repo standardizes on `uv` for Python deps and running scripts.
+- Use `uv sync` once, then prefix script commands with `uv run ...`.
 
 ## Coding Style & Naming Conventions
 
 - Use spaces (not tabs).
-- Python: `snake_case` identifiers; keep scripts small and single-purpose.
-- Data templates: keep stable keys (e.g., `provider_id`, `vehicle_id`, `option_id`) and avoid renaming columns.
+- JS/CSS: keep it dependency-light (plain ES modules, no build pipeline unless needed).
+- Python (scripts): `snake_case`; keep scripts small and single-purpose.
+- TSV schemas: keep stable IDs/columns (e.g., `provider_id`, `vehicle_id`, `option_id`) and append new columns rather than renaming.
 
 ## Data & Updates (Rates)
 
-- Pricing rows live in `templates/sheets/Options.tsv` (one row = one option: PAYG/PACKAGE/DAILY).
-- Vehicles live in `templates/sheets/Vehicles.tsv`:
-  - CityBee + CarGuru can be refreshed via `python scripts/import_vehicles.py`
-  - Bolt vehicles/packages are added manually as they appear in-app.
-- After changing templates, regenerate XLSX outputs so users can upload to Google Sheets.
+- Source-of-truth lives in `templates/sheets/*.tsv`; the web app consumes the exported `web/data/*.tsv`.
+- Bolt Drive data is often manual (in-app); add new vehicles/options by appending TSV rows (the app also supports local overrides via “Data”).
 
 ## Commit & Pull Request Guidelines
 
 - Keep changes focused (e.g., “add Bolt packages”, “fix rounding”, “update CityBee vehicles”).
-- PRs: include the source of truth (link/screenshot), and note which templates/XLSX files changed.
+- PRs: include a source-of-truth link/screenshot for pricing updates and note which TSV files changed.
 
 ## Security & Configuration Tips
 
-- Do not commit secrets. Use `.env` (gitignored) for local configuration.
-- Prefer sample config files (e.g., `.env.example`) when introducing new required settings.
+- Do not commit secrets. If configuration is added later, prefer `.env` (gitignored) + `.env.example`.
