@@ -1,0 +1,21 @@
+Field	Value	Notes
+Start datetime		Timezone: Europe/Riga
+Total time (Duration)	1:00	Enter as Duration (e.g., 1:30 or 36:00)
+Parking time (Duration)	0:00	Optional; must be <= total time
+Distance (km)	10
+Airport zone (either pickup or dropoff)	FALSE	MVP: single toggle
+		
+Fuel price (€/L)	1.70	Used when `fuel_included=FALSE`
+Consumption (L/100km)	7.5	Used when `fuel_included=FALSE`
+		
+End datetime	=B2+B3	
+Total minutes billed	=ROUNDUP(B3*1440,0)	Round up to next minute
+Parking minutes billed	=ROUNDUP(B4*1440,0)	
+Distance km billed	=ROUNDUP(B5,0)	Round up to next km
+Parking<=Total check	=IF(B13>B12,"ERROR: parking > total","OK")	
+		
+provider_id	night_start	night_end	night_min (manual)	day_min	park_night_min	park_day_min	drive_night_min	drive_day_min
+carguru	=VLOOKUP(A18,Providers!A:E,3,FALSE)	=VLOOKUP(A18,Providers!A:E,4,FALSE)		=$B$12-D18	=IF($B$12=0,0,MIN($B$13,MIN(D18,ROUNDUP($B$13*D18/$B$12,0))))	=$B$13-F18	=D18-F18	=E18-G18
+citybee	=VLOOKUP(A19,Providers!A:E,3,FALSE)	=VLOOKUP(A19,Providers!A:E,4,FALSE)		=$B$12-D19	=IF($B$12=0,0,MIN($B$13,MIN(D19,ROUNDUP($B$13*D19/$B$12,0))))	=$B$13-F19	=D19-F19	=E19-G19
+bolt	=VLOOKUP(A20,Providers!A:E,3,FALSE)	=VLOOKUP(A20,Providers!A:E,4,FALSE)		=$B$12-D20	=IF($B$12=0,0,MIN($B$13,MIN(D20,ROUNDUP($B$13*D20/$B$12,0))))	=$B$13-F20	=D20-F20	=E20-G20
+

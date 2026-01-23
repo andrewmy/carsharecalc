@@ -1,0 +1,9 @@
+Field	Value	Notes
+Selected option_id		Use dropdown from Results column C
+Total (€)	=IF(B2="","",INDEX(FILTER(Results!AF:AF,Results!C:C=B2),1))	
+Base (€)	=IF(B2="","",INDEX(FILTER(Results!AG:AG,Results!C:C=B2),1))	
+Fees (€)	=IF(B2="","",INDEX(FILTER(Results!AH:AH,Results!C:C=B2),1))	
+Time (€)	=IF(B2="","",INDEX(FILTER(Results!AI:AI,Results!C:C=B2),1))	
+Distance (€)	=IF(B2="","",INDEX(FILTER(Results!AJ:AJ,Results!C:C=B2),1))	
+Airport (€)	=IF(B2="","",INDEX(FILTER(Results!AK:AK,Results!C:C=B2),1))	
+Fuel (€)	=IF(B2="","",INDEX(FILTER(Results!AL:AL,Results!C:C=B2),1))	
