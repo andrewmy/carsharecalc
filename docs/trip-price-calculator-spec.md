@@ -107,7 +107,7 @@ The primary deliverable is the **no-build web app** in `web/` (desktop + mobile)
 
 Run locally:
 - `uv sync`
-- `uv run python -m http.server 8000` → open `http://localhost:8000/web/`
+- `npx --yes serve -l 8000 web` → open `http://localhost:8000/`
 
 Data:
 - Source-of-truth TSVs live in `web/data/` and are committed to the repo.

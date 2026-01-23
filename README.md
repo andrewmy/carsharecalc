@@ -4,9 +4,8 @@ No-build web app to estimate and compare car sharing trip prices in **Riga** acr
 
 ## Run locally
 
-- `uv sync`
-- `uv run python -m http.server 8000`
-- Open `http://localhost:8000/web/`
+- `npx --yes serve -l 8000 web`
+- Open `http://localhost:8000/`
 
 ## Tests
 
@@ -22,6 +21,7 @@ Source-of-truth TSVs (commit changes here):
 
 Update CarGuru/CityBee data (Bolt is manual):
 
+- `uv sync`
 - `uv run python scripts/import_vehicles.py`
 - `uv run python scripts/import_options.py`
 
@@ -32,4 +32,3 @@ The app also supports local TSV overrides via the **Advanced** dialog (saved in 
 - UI supports `LV`/`EN` (dropdown in the header).
 - User choice persists in localStorage; otherwise we detect browser language with fallback to Latvian.
 - Edit strings in `web/lib/i18n.js`.
-

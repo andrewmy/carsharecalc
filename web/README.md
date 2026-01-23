@@ -6,11 +6,11 @@ Lightweight, no-build web app to compare trip costs across providers.
 
 From the repo root:
 
-- `uv run python -m http.server 8000`
+- `npx --yes serve -l 8000 web`
 
 Then open:
 
-- `http://localhost:8000/web/`
+- `http://localhost:8000/`
 
 ## Data
 

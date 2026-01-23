@@ -15,7 +15,7 @@ This repo contains **CarShareCalc**: a no-build web app for estimating trip pric
 Common commands (from repo root):
 
 - Install/sync Python deps: `uv sync`
-- Run the app locally: `uv run python -m http.server 8000` → open `http://localhost:8000/web/`
+- Run the app locally: `npx --yes serve -l 8000 web` → open `http://localhost:8000/`
 - Unit tests (Node, no deps): `npm test`
 - Refresh data (CarGuru + CityBee) into `web/data/`: `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
 
