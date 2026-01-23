@@ -18,6 +18,10 @@ Common commands (from repo root):
 - Run the app locally: `npx --yes serve -l 8000 web` → open `http://localhost:8000/`
 - Unit tests (Node, no deps): `npm test`
 - Refresh data (CarGuru + CityBee) into `web/data/`: `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
+- Generate app icons (favicon/PWA): `uv run python scripts/generate_favicon.py path/to/source.png`
+
+Spec:
+- `docs/trip-price-calculator-spec.md`
 
 ## Python Environment (uv only)
 

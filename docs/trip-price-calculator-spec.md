@@ -14,12 +14,12 @@ Given a planned trip in **Riga, Latvia**, estimate total trip cost across **CarG
 
 ## Inputs
 Required
-- `Start datetime` (device local time; for Riga accuracy set timezone to Europe/Riga)
-- `Total rental time` (HH:MM)
+- `Start datetime` (entered via `datetime-local` and interpreted as the device’s local time; for Riga accuracy set device timezone to Europe/Riga)
+- `Total rental time` (H:MM / HH:MM)
 - `Trip distance` (km)
 
 Optional
-- `Parking/standstill time` (HH:MM, must be ≤ total; default `00:00`)
+- `Parking/standstill time` (H:MM / HH:MM, must be ≤ total; default `0:00`)
 - `Airport zone` (checkbox)
 - Fuel model (for tariffs where fuel is not included):
   - `Fuel price (€/L)` (default: configurable)
@@ -29,7 +29,7 @@ User warning
 - Assumes **one‑way**. If returning, user should add return time/distance to inputs.
 
 ## Rounding & Derived Values
-- Time input is HH:MM (minute resolution).
+- Time input is H:MM / HH:MM (minute resolution; minutes must be `00`–`59`).
 - Distance billed: **round up to next km**
 - Prices: **round to €0.01** (standard rounding)
 
@@ -64,11 +64,11 @@ Total = sum of:
 - zone fees: airport fee if toggle enabled
 - fuel cost if fuel not included
 
-Then apply PAYG constraints (if defined):
-- minimum charge: `min_total_eur` caps *up* the PAYG base (trip fee + time + distance)
-- daily cap: `cap_24h_eur` caps *down* the PAYG base per started 24h block (`ceil(total_min/1440) * cap_24h_eur`)
-Notes:
-- Airport fees and fuel are **added after** min/cap (provider-specific; adjust if needed later).
+Then apply constraints (if defined) as implemented today:
+- daily cap: `cap_24h_eur` caps *down* **time charges only** per started 24h block (`ceil(total_min/1440) * cap_24h_eur`)
+- minimum charge: `min_total_eur` caps *up* the subtotal `(trip_fee + time + km)` **after** the time cap is applied
+Notes (current MVP behavior):
+- Fixed fees (`unlock_fee_eur`, `reservation_fee_eur`, `fixed_fee_eur`), airport fees, and fuel are **added after** min/cap.
 
 ### 2) Upfront package (PACKAGE)
 Represents “buy X minutes + Y km” (CityBee packs, etc.).
@@ -77,14 +77,12 @@ Total = package price + fees + overage + airport + fuel (if not included)
   - `over_min = max(0, total_min - included_min)`
   - `over_km = max(0, dist_km - included_km)`
 - Overage pricing:
-  - if explicit `over_min_rate_*`/`over_km_rate` provided, use them
-  - else default to the option’s PAYG rates
-- Day/night split for overage minutes (MVP implementation detail):
-  - compute the trip’s **blended per‑minute rate** from PAYG time charges:
+  - km overage uses `over_km_rate_eur` if present, otherwise `km_rate_eur`
+  - minute overage (current MVP): uses a **blended per‑minute rate** derived from PAYG time charges:
     - `blended_min_rate = payg_time_eur / total_min`
-  - `over_time_eur = over_min * blended_min_rate`
-  - This is equivalent to proportional allocation across minute categories, and keeps the MVP simple.
-  - (future: exact timeline allocation or min/max bounds)
+    - `over_time_eur = over_min * blended_min_rate`
+    - This is equivalent to proportional allocation across minute categories, and keeps the MVP simple.
+    - `over_day_min_rate_eur` / `over_night_min_rate_eur` exist in the schema but are **not used yet** by the calculator.
 
 Important: show “effective trip cost” even if usage is far below included amounts (e.g., 1 km trip in 100 km pack costs full pack price).
 
@@ -122,15 +120,15 @@ Tests:
 - Unit tests use Node’s built-in runner: `npm test`.
 
 ## Data Schema (TSV)
-One row in `Options.tsv` represents one purchasable/choosable pricing option for a vehicle.
+One row in `web/data/options.tsv` represents one purchasable/choosable pricing option for a vehicle.
 
 Core columns
 - IDs: `provider_id`, `vehicle_id`, `option_id`, `option_name`, `option_type` (`PAYG`/`PACKAGE`/`DAILY`)
 - Fees: `unlock_fee_eur`, `reservation_fee_eur`, `fixed_fee_eur`, `airport_fee_eur`
 - Trip constraints (used by some providers):
   - `trip_fee_eur` (one-time per trip; CityBee-style)
-  - `min_total_eur` (minimum charge for PAYG base usage)
-  - `cap_24h_eur` (PAYG daily cap per started 24h block; applied to PAYG base usage)
+  - `min_total_eur` (minimum charge; applied to `(trip_fee + plan + time + km)` before fees/airport/fuel are added; for PAYG, `plan=0`)
+  - `cap_24h_eur` (daily cap per started 24h block; **currently applied to time charges only**)
 - Time rates:
   - `drive_day_min_rate_eur`, `drive_night_min_rate_eur`
   - `park_day_min_rate_eur`, `park_night_min_rate_eur` (default = drive rates)
@@ -144,7 +142,7 @@ PACKAGE columns (nullable for other types)
 - `included_min`
 - `included_km` (also used as PAYG free km threshold)
 - `over_km_rate_eur` (also used for PAYG km overage; blank = use `km_rate_eur`)
-- `over_day_min_rate_eur` / `over_night_min_rate_eur` (blank = use drive rates)
+- `over_day_min_rate_eur` / `over_night_min_rate_eur` (reserved; currently not used by the calculator)
 
 DAILY columns (nullable for other types)
 - `daily_price_eur`
@@ -171,6 +169,13 @@ Flags / notes
 4) Update `web/data/*.tsv` (either manually or via scripts):
    - `uv run python scripts/import_vehicles.py`
    - `uv run python scripts/import_options.py`
+
+## Implementation Notes (current code)
+- `cap_24h_eur` is applied to **time charges only** for `PAYG` and `PACKAGE` (minute overage), not to km or fees.
+- `min_total_eur` is applied to `(trip_fee + plan + time + km)` before fixed fees, airport, and fuel are added (most data only uses it for PAYG).
+- CarGuru quirks in `web/lib/calc.js`:
+  - If `fixed_fee_eur` is missing/0 (non-DAILY), a default service fee of `€0.99` is assumed.
+  - If `min_total_eur` is missing/0 for CarGuru PAYG, a default minimum of `€2.00` is assumed.
 
 ## Future Enhancements
 - Split “Airport zone” into `pickup_at_airport` and `dropoff_at_airport`; add multiple zones.
