@@ -353,7 +353,11 @@ export function computeAll(data, ctx, providerFilter) {
       night_end: '06:00',
     };
 
-    const veh = data.vehiclesById.get(opt.vehicle_id) || { vehicle_name: opt.vehicle_id, provider_id: providerId };
+    const veh = data.vehiclesById.get(opt.vehicle_id) || {
+      vehicle_name: opt.vehicle_id,
+      provider_id: providerId,
+      snowboard_ok: false,
+    };
 
     const nightMin = computeNightMinutes(ctx.start, ctx.end, provider.night_start, provider.night_end);
     const nightClamped = Math.min(ctx.totalMin, Math.max(0, nightMin));
@@ -378,6 +382,7 @@ export function computeAll(data, ctx, providerFilter) {
       provider_name: provider.provider_name || providerId,
       vehicle_id: opt.vehicle_id,
       vehicle_name: veh.vehicle_name || opt.vehicle_id,
+      snowboard_ok: !!veh.snowboard_ok,
       option_id: opt.option_id,
       option_name: opt.option_name || opt.option_id,
       option_type: opt.option_type || '',

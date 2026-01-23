@@ -133,6 +133,7 @@ function snapshotInputsFromDom() {
     consumption: $('consumption').value,
     q: $('q').value,
     providerFilter: $('providerFilter').value,
+    snowboardFilter: $('snowboardFilter').checked,
     limit: $('limit').value,
     optionTypes: getSelectedOptionTypesFromDom(),
   };
@@ -149,6 +150,7 @@ function applyInputsToDom(snapshot) {
   if (snapshot.consumption != null) $('consumption').value = String(snapshot.consumption);
   if (typeof snapshot.q === 'string') $('q').value = snapshot.q;
   if (typeof snapshot.providerFilter === 'string') $('providerFilter').value = snapshot.providerFilter;
+  if (typeof snapshot.snowboardFilter === 'boolean') $('snowboardFilter').checked = snapshot.snowboardFilter;
   if (snapshot.limit != null) $('limit').value = String(snapshot.limit);
   if (snapshot.optionTypes != null) applySelectedOptionTypesToDom(snapshot.optionTypes);
 }
@@ -258,8 +260,10 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
 
   const q = (query || '').trim().toLowerCase();
   const selectedTypes = new Set(getSelectedOptionTypesFromDom().map((t) => String(t).toUpperCase()));
+  const snowboardOnly = $('snowboardFilter').checked;
   const matched = computed.filter(r => {
     if (providerFilter && r.provider_id !== providerFilter) return false;
+    if (snowboardOnly && !r.snowboard_ok) return false;
     if (selectedTypes.size > 0 && !selectedTypes.has(String(r.option_type || '').toUpperCase())) return false;
     if (!q) return true;
     const hay = `${r.provider_id} ${r.provider_name} ${r.vehicle_name} ${r.option_name} ${r.option_type}`.toLowerCase();
@@ -564,6 +568,7 @@ function setDefaultInputs() {
   $('consumption').value = '7.5';
   $('q').value = '';
   $('providerFilter').value = '';
+  $('snowboardFilter').checked = false;
   $('limit').value = '50';
   applySelectedOptionTypesToDom(['PAYG', 'PACKAGE', 'DAILY']);
 }
@@ -583,7 +588,7 @@ function wireInputs(defaults) {
     saveInputsToLocalStorage(snapshotInputsFromDom());
     recalc(defaults);
   };
-  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPrice','consumption','q','providerFilter','limit']) {
+  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPrice','consumption','q','providerFilter','snowboardFilter','limit']) {
     $(id).addEventListener('input', onChange);
     $(id).addEventListener('change', onChange);
   }
