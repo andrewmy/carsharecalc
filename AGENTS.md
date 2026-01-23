@@ -32,6 +32,11 @@ Common commands (from repo root):
 - Python (scripts): `snake_case`; keep scripts small and single-purpose.
 - TSV schemas: keep stable IDs/columns (e.g., `provider_id`, `vehicle_id`, `option_id`) and append new columns rather than renaming.
 
+## Collaboration (Agent Workflow)
+
+- Before making non-trivial product/UI changes, clarify requirements with a short “interview” (questions first, code second).
+- Keep changes incremental and testable; prefer unit tests for pricing logic in `web/lib/`.
+
 ## Data & Updates (Rates)
 
 - Source-of-truth lives in `web/data/*.tsv`.
