@@ -8,8 +8,10 @@ const STRINGS = {
     // Top actions
     advanced: 'Paplašināti',
     advanced_title: 'Paplašināti: rediģēt cenu tabulas',
+    advanced_aria: 'Atvērt paplašinātos iestatījumus',
     reset: 'Atiestatīt',
     reset_title: 'Atiestatīt ievadi',
+    reset_aria: 'Atiestatīt ievadi',
 
     // Inputs
     estimate_title: 'Aprēķināt braucienu',
@@ -144,8 +146,10 @@ const STRINGS = {
 
     advanced: 'Advanced',
     advanced_title: 'Advanced: edit pricing tables',
+    advanced_aria: 'Open advanced settings',
     reset: 'Reset',
     reset_title: 'Reset inputs',
+    reset_aria: 'Reset inputs',
 
     estimate_title: 'Estimate a trip',
     estimate_hint: 'One-way assumed. If you plan to return, add return time/distance to the inputs.',
