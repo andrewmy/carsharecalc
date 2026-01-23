@@ -49,6 +49,8 @@ const STRINGS = {
     top_100: 'Top 100',
     all: 'Visi',
     limit_title: 'Rādīt top rezultātus',
+    github_title: 'Atvērt GitHub repozitoriju',
+    github_aria: 'Atvērt GitHub',
 
     th_index: '#',
     th_provider: 'Pakalpojums',
@@ -181,6 +183,8 @@ const STRINGS = {
     top_100: 'Top 100',
     all: 'All',
     limit_title: 'Show top results',
+    github_title: 'Open GitHub repository',
+    github_aria: 'Open GitHub',
 
     th_index: '#',
     th_provider: 'Provider',
