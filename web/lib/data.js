@@ -8,13 +8,18 @@ export function normalizeData(raw) {
 
   const vehiclesById = new Map();
   for (const v of raw.vehicles) {
-    const snowboardOk = String(v.snowboard_ok || '').trim().toUpperCase() === 'TRUE';
+    const snowboardFitRaw = String(v.snowboard_fit ?? '').trim();
+    const snowboardFitNum = snowboardFitRaw === '' ? 0 : Number(snowboardFitRaw);
+    const snowboardFit =
+      Number.isFinite(snowboardFitNum) && snowboardFitNum >= 0 && snowboardFitNum <= 2
+        ? Math.trunc(snowboardFitNum)
+        : 0;
     vehiclesById.set(v.vehicle_id, {
       provider_id: v.provider_id,
       vehicle_id: v.vehicle_id,
       vehicle_name: v.vehicle_name || v.vehicle_id,
       vehicle_class: v.vehicle_class || '',
-      snowboard_ok: snowboardOk,
+      snowboard_fit: snowboardFit,
       snowboard_source_url: v.snowboard_source_url || '',
     });
   }

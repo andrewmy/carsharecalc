@@ -27,20 +27,20 @@ Notes:
 
 Columns:
 
-- `provider_id`, `vehicle_id`, `vehicle_name`, `vehicle_class`, `snowboard_ok`, `snowboard_source_url`
+- `provider_id`, `vehicle_id`, `vehicle_name`, `vehicle_class`, `snowboard_fit`, `snowboard_source_url`
 
 Guidance:
 
 - `vehicle_name`: the human-readable model name shown in the app.
 - `vehicle_class`: optional; keep blank unless you actively use it for grouping.
-- `snowboard_ok`: `TRUE` / `FALSE` / blank (blank means “unknown”; only `TRUE` matches the filter).
-- `snowboard_source_url`: any supporting link (leave blank if unknown).
+- `snowboard_fit`: `0` / `1` / `2` (comfort rating for a ~163cm bulky snowboard bag with boots; front passenger usable).
+- `snowboard_source_url`: any supporting link (or a screenshot link / note).
 
 3) Generate a snowboard-metadata checklist (optional)
 
 - `uv run python scripts/snowboard_queue.py`
 
-If your new Bolt row has blank `snowboard_ok`, paste the output into your PR description so it’s easy to backfill later.
+If your new Bolt row has blank `snowboard_fit`, paste the output into your PR description so it’s easy to backfill later.
 
 ## Step-by-step: add Bolt pricing (options)
 
@@ -115,9 +115,9 @@ If Bolt has multiple cars with identical package menus (tiers), you can avoid re
 3) Clone rows with a script
 
 - Dry-run (prints TSV snippets to paste):
-  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4"`
+  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --snowboard-fit 2`
 - Apply directly:
-  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --as-of 2026-01-24`
+  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --snowboard-fit 2 --as-of 2026-01-24`
 
 Optional overrides (if PAYG differs from the representative):
 

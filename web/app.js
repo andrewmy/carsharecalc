@@ -263,7 +263,7 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
   const snowboardOnly = $('snowboardFilter').checked;
   const matched = computed.filter(r => {
     if (providerFilter && r.provider_id !== providerFilter) return false;
-    if (snowboardOnly && !r.snowboard_ok) return false;
+    if (snowboardOnly && Number(r.snowboard_fit || 0) <= 0) return false;
     if (selectedTypes.size > 0 && !selectedTypes.has(String(r.option_type || '').toUpperCase())) return false;
     if (!q) return true;
     const hay = `${r.provider_id} ${r.provider_name} ${r.vehicle_name} ${r.option_name} ${r.option_type}`.toLowerCase();
@@ -296,6 +296,9 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
     i++;
     const optType = String(row.option_type || '').trim().toUpperCase();
     const m = row.breakdown?.meta || {};
+    const sb = Number(row.snowboard_fit || 0) || 0;
+    const sbIcon = sb >= 2 ? '🏂🏂' : sb >= 1 ? '🏂' : '';
+    const sbTitle = sb >= 2 ? t('tt_snowboard_fit_2') : sb >= 1 ? t('tt_snowboard_fit_1') : '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="muted">${i}</td>
@@ -304,7 +307,12 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
           ${escapeHtml(row.provider_name)}
         </button>
       </td>
-      <td>${escapeHtml(row.vehicle_name)}</td>
+      <td>
+        <div class="rowTitle">
+          <div>${escapeHtml(row.vehicle_name)}</div>
+          ${sbIcon ? `<span class="pill" title="${escapeHtml(sbTitle)}">${sbIcon}</span>` : ''}
+        </div>
+      </td>
       <td>
         <div class="rowTitle">
           <div>${escapeHtml(row.option_name)}</div>

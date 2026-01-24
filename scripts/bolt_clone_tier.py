@@ -63,11 +63,13 @@ def normalize_vehicle_id(s: str) -> str:
     return s
 
 
-def normalize_bool_tsv(s: str) -> str:
-    v = s.strip().upper()
-    if v in {"", "TRUE", "FALSE"}:
+def normalize_snowboard_fit(s: str) -> str:
+    v = (s or "").strip()
+    if v == "":
+        return ""
+    if v in {"0", "1", "2"}:
         return v
-    raise ValueError("snowboard_ok must be TRUE/FALSE/blank")
+    raise ValueError("snowboard_fit must be 0/1/2/blank")
 
 
 def replace_as_of(notes: str, as_of: str) -> str:
@@ -95,7 +97,11 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--apply", action="store_true", help="If set, write changes into TSVs. Otherwise, print TSV snippets to paste.")
 
     ap.add_argument("--vehicle-class", default="", help="Optional vehicle_class for vehicles.tsv")
-    ap.add_argument("--snowboard-ok", default="", help="vehicles.tsv snowboard_ok (TRUE/FALSE/blank)")
+    ap.add_argument(
+        "--snowboard-fit",
+        default="",
+        help="vehicles.tsv snowboard_fit (0/1/2/blank). Baseline: ~163cm bulky bag with boots; front passenger usable.",
+    )
     ap.add_argument("--snowboard-source-url", default="", help="vehicles.tsv snowboard_source_url (optional)")
 
     ap.add_argument("--as-of", default="", help="If set (YYYY-MM-DD), updates/annotates notes with this date.")
@@ -130,14 +136,21 @@ def main(argv: list[str]) -> int:
         print("--to-vehicle-name must be non-empty.", file=sys.stderr)
         return 2
 
-    snowboard_ok = normalize_bool_tsv(args.snowboard_ok)
+    snowboard_fit = normalize_snowboard_fit(args.snowboard_fit)
     vehicle_class = (args.vehicle_class or "").strip()
     snowboard_source_url = (args.snowboard_source_url or "").strip()
 
     vehicles = read_tsv(vehicles_path)
     options = read_tsv(options_path)
 
-    for col in ("provider_id", "vehicle_id", "vehicle_name", "vehicle_class", "snowboard_ok", "snowboard_source_url"):
+    for col in (
+        "provider_id",
+        "vehicle_id",
+        "vehicle_name",
+        "vehicle_class",
+        "snowboard_fit",
+        "snowboard_source_url",
+    ):
         if col not in vehicles.header:
             print(f"vehicles.tsv missing expected column: {col}", file=sys.stderr)
             return 2
@@ -230,7 +243,7 @@ def main(argv: list[str]) -> int:
             "vehicle_id": to_vehicle_id,
             "vehicle_name": to_vehicle_name,
             "vehicle_class": vehicle_class,
-            "snowboard_ok": snowboard_ok,
+            "snowboard_fit": snowboard_fit,
             "snowboard_source_url": snowboard_source_url,
         }
     )

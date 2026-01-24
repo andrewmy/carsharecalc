@@ -46,7 +46,7 @@ const STRINGS = {
     daily_desc: 'dienas noma',
 
     filter_placeholder: 'Meklēt (kompānija / auto / tarifs)...',
-    filter_snowboard: 'Der snovbordam (≥160 cm)',
+    filter_snowboard: 'Snovborda soma (163 cm)',
     all_providers: 'Visas kompānijas',
     top_50: 'Top 50',
     top_100: 'Top 100',
@@ -113,6 +113,8 @@ const STRINGS = {
 
     // Tooltips
     tt_filter_provider: 'Filtrēt pēc kompānijas',
+    tt_snowboard_fit_1: 'Snovborda soma (163 cm): der, bet šauri (pasažierim var būt neērti)',
+    tt_snowboard_fit_2: 'Snovborda soma (163 cm): der labi (priekšējam pasažierim OK)',
 
     // Errors
     err_start_required: 'Nepieciešams sākuma laiks.',
@@ -130,7 +132,7 @@ const STRINGS = {
     tab_vehicles: 'Auto',
     tab_options: 'Tarifi',
     cols_providers: 'Kolonnas: provider_id, provider_name, night_start, night_end',
-    cols_vehicles: 'Kolonnas: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_ok, snowboard_source_url',
+    cols_vehicles: 'Kolonnas: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_fit, snowboard_source_url',
     cols_options: 'Kolonnām jāatbilst web/data/options.tsv virsrakstam.',
     adv_load_defaults: 'Ielādēt noklusējumus',
     adv_reset_saved: 'Dzēst saglabātos datus',
@@ -183,7 +185,7 @@ const STRINGS = {
     daily_desc: 'daily rental',
 
     filter_placeholder: 'Filter (provider / car / option)...',
-    filter_snowboard: 'Fits snowboard (160+ cm)',
+    filter_snowboard: 'Snowboard bag (163 cm)',
     all_providers: 'All providers',
     top_50: 'Top 50',
     top_100: 'Top 100',
@@ -244,6 +246,8 @@ const STRINGS = {
     park_night: 'Park (night):',
 
     tt_filter_provider: 'Filter by provider',
+    tt_snowboard_fit_1: 'Snowboard bag (163 cm): fits but tight (front passenger may be compromised)',
+    tt_snowboard_fit_2: 'Snowboard bag (163 cm): fits well (front passenger OK)',
 
     err_start_required: 'Start datetime is required.',
     err_start_invalid: 'Invalid start datetime.',
@@ -259,7 +263,7 @@ const STRINGS = {
     tab_vehicles: 'Vehicles',
     tab_options: 'Options',
     cols_providers: 'Columns: provider_id, provider_name, night_start, night_end',
-    cols_vehicles: 'Columns: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_ok, snowboard_source_url',
+    cols_vehicles: 'Columns: provider_id, vehicle_id, vehicle_name, vehicle_class, snowboard_fit, snowboard_source_url',
     cols_options: 'Columns must match web/data/options.tsv header.',
     adv_load_defaults: 'Load defaults',
     adv_reset_saved: 'Reset saved data',

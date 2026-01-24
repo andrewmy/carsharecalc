@@ -13,7 +13,7 @@ DEFAULT_VEHICLES_HEADER = [
     "vehicle_id",
     "vehicle_name",
     "vehicle_class",
-    "snowboard_ok",
+    "snowboard_fit",
     "snowboard_source_url",
 ]
 

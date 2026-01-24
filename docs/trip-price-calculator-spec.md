@@ -127,8 +127,9 @@ One row in `web/data/options.tsv` represents one purchasable/choosable pricing o
 `web/data/vehicles.tsv` contains the vehicle list and metadata:
 
 - IDs: `provider_id`, `vehicle_id`, `vehicle_name`, `vehicle_class`
-- Snowboard filter metadata: `snowboard_ok` (`TRUE`/`FALSE`/blank) and `snowboard_source_url`
-  - Blank means “unknown” and is treated the same as `FALSE` by the filter (only `TRUE` matches).
+- Snowboard fit metadata: `snowboard_fit` (`0`/`1`/`2`/blank) and `snowboard_source_url`
+  - Baseline: ~163cm bulky snowboard bag with boots; front passenger usable.
+  - Filter matches `>= 1`; blank means “unknown” and is treated the same as `0` by the filter.
 
 Core columns
 - IDs: `provider_id`, `vehicle_id`, `option_id`, `option_name`, `option_type` (`PAYG`/`PACKAGE`/`DAILY`)
@@ -170,7 +171,7 @@ Flags / notes
 ## Data Entry Workflow (Rates)
 1) Add/verify provider night windows in `web/data/providers.tsv`.
 2) Add vehicles in `web/data/vehicles.tsv`.
-   - If you add new vehicles and don’t know snowboard fitment yet, leave `snowboard_ok` / `snowboard_source_url` blank.
+   - If you add new vehicles and don’t know snowboard fitment yet, leave `snowboard_fit` / `snowboard_source_url` blank.
    - Use `uv run python scripts/snowboard_queue.py` to generate a PR checklist of missing snowboard metadata.
 3) Create option rows in `web/data/options.tsv` for each tariff/package/daily rental on:
    - CarGuru: `https://carguru.lv/rates`

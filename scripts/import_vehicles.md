@@ -19,19 +19,19 @@ Notes:
 
 `web/data/vehicles.tsv` includes these extra columns:
 
-- `snowboard_ok`: `TRUE` / `FALSE` / blank (blank = unknown)
-- `snowboard_source_url`: link supporting the decision
+- `snowboard_fit`: `0` / `1` / `2` (comfort rating for a ~163cm bulky snowboard bag with boots; front passenger usable)
+- `snowboard_source_url`: link supporting the decision (or notes/screenshot link)
 
-The web app treats only `TRUE` as “fits snowboard”; `FALSE` and blank are both treated as not matching the filter.
+The web app’s snowboard filter keeps vehicles with `snowboard_fit >= 1`.
 
 ### Recommended PR workflow
 
 1) Add/refresh vehicles:
    - CityBee/CarGuru: `uv run python scripts/import_vehicles.py`
    - Bolt/manual: edit `web/data/vehicles.tsv` directly
-2) Leave `snowboard_ok` / `snowboard_source_url` blank for new rows if unknown.
+2) If you don’t know snowboard fitment yet, leave `snowboard_fit` / `snowboard_source_url` blank for new rows.
 3) Run `uv run python scripts/snowboard_queue.py` and paste the output into the PR description as a checklist.
-4) Fill in `snowboard_ok` and `snowboard_source_url` for the new model(s), and apply the same decision to any existing matching models in `vehicles.tsv`.
+4) Apply the same rating to any existing matching models in `vehicles.tsv`.
 
 ### Important
 

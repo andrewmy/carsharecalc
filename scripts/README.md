@@ -20,7 +20,7 @@ Refreshes `web/data/options.tsv` from public sources (CarGuru + CityBee) and kee
 
 ## `snowboard_queue.py`
 
-Prints a PR-ready checklist of vehicles where `snowboard_ok` is blank in `web/data/vehicles.tsv`.
+Prints a PR-ready checklist of vehicles where `snowboard_fit` is blank in `web/data/vehicles.tsv`.
 
 - `uv run python scripts/snowboard_queue.py`
 
@@ -30,9 +30,9 @@ Clones all **Bolt** `web/data/options.tsv` rows from a tier representative vehic
 This avoids re-entering dozens of package rows when multiple cars share the same tier.
 
 - Dry-run (prints TSV snippets to paste):
-  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4"`
+  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --snowboard-fit 2`
 - Apply directly to TSVs:
-  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --as-of 2026-01-24`
+  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --snowboard-fit 2 --as-of 2026-01-24`
 
 Common overrides (if the new car’s PAYG differs from the representative):
 

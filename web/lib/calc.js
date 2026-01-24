@@ -356,7 +356,7 @@ export function computeAll(data, ctx, providerFilter) {
     const veh = data.vehiclesById.get(opt.vehicle_id) || {
       vehicle_name: opt.vehicle_id,
       provider_id: providerId,
-      snowboard_ok: false,
+      snowboard_fit: 0,
     };
 
     const nightMin = computeNightMinutes(ctx.start, ctx.end, provider.night_start, provider.night_end);
@@ -382,7 +382,7 @@ export function computeAll(data, ctx, providerFilter) {
       provider_name: provider.provider_name || providerId,
       vehicle_id: opt.vehicle_id,
       vehicle_name: veh.vehicle_name || opt.vehicle_id,
-      snowboard_ok: !!veh.snowboard_ok,
+      snowboard_fit: Number(veh.snowboard_fit || 0) || 0,
       option_id: opt.option_id,
       option_name: opt.option_name || opt.option_id,
       option_type: opt.option_type || '',
