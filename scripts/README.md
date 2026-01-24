@@ -24,6 +24,23 @@ Prints a PR-ready checklist of vehicles where `snowboard_ok` is blank in `web/da
 
 - `uv run python scripts/snowboard_queue.py`
 
+## `bolt_clone_tier.py`
+
+Clones all **Bolt** `web/data/options.tsv` rows from a tier representative vehicle to a new Bolt vehicle_id.
+This avoids re-entering dozens of package rows when multiple cars share the same tier.
+
+- Dry-run (prints TSV snippets to paste):
+  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4"`
+- Apply directly to TSVs:
+  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --as-of 2026-01-24`
+
+Common overrides (if the new car’s PAYG differs from the representative):
+
+- `--minute-rate 0.15` (applies to all cloned rows)
+- `--km-rate 0.30` (applies to all cloned rows)
+- `--min-total 2.75` / `--cap-24h 27.90` (PAYG only)
+- `--airport-fee 3.5`
+
 ## `generate_favicon.py`
 
 Generates app icons in `web/` (favicon + PWA/mobile PNGs).

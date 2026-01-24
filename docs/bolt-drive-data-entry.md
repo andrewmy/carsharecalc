@@ -97,10 +97,33 @@ From repo root:
 - `npm test`
 - `npx --yes serve -l 8000 web` and sanity-check the UI
 
+## Faster workflow: tiers (clone instead of re-entering 60+ rows)
+
+If Bolt has multiple cars with identical package menus (tiers), you can avoid re-entering all package rows:
+
+1) Pick a tier representative
+
+- Use a Bolt vehicle that already has the full package set in `web/data/options.tsv` (including any “daily”/rental bundles you care about).
+- If a tier is missing packages, add them once to the representative first.
+
+2) For each new car in that tier, only capture what differs
+
+- Usually: PAYG screen only (minute/km/minimum/cap) + confirm the tier matches.
+
+3) Clone rows with a script
+
+- Dry-run (prints TSV snippets to paste):
+  - `uv run python scripts/bolt_clone_tier.py --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4"`
+- Apply directly:
+  - `uv run python scripts/bolt_clone_tier.py --apply --from-vehicle-id bolt_vw_tayron --to-vehicle-id bolt_vw_id4 --to-vehicle-name "VW ID.4" --as-of 2026-01-24`
+
+Optional overrides (if PAYG differs from the representative):
+
+- `--minute-rate 0.15`, `--km-rate 0.30`, `--min-total 2.75`, `--cap-24h 27.90`, `--airport-fee 3.5`
+
 ## PR checklist
 
 - Added Bolt vehicle row(s) in `web/data/vehicles.tsv`
 - Added Bolt option row(s) in `web/data/options.tsv`
 - Included a source (or notes) for each new/changed Bolt option
 - If snowboard metadata is blank: included `scripts/snowboard_queue.py` output in the PR description
-
