@@ -201,6 +201,12 @@ body::before{
   gap:10px;
   align-items:center;
 }
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  min-width:0;
+}
 .field--check input[type="checkbox"]{margin-top:0}
 .field--inline{grid-column: span 12; display:grid; grid-template-columns: 220px 220px 240px 1fr; align-items:start; gap:10px}
 .field--inline > div:not(.field__hint){display:flex;flex-direction:column;gap:6px}
@@ -261,6 +267,10 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 
 @media (max-width: 520px){
   .btn--iconOnly .btn__label{display:none}
+  .field--inline{grid-template-columns: 1fr}
+  .filters{align-items:stretch}
+  .filters .input{width:100%}
+  .filters .filterCheck{width:100%;justify-content:space-between}
 }
 
 .srOnly{
