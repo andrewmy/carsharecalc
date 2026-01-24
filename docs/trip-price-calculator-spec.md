@@ -22,8 +22,9 @@ Optional
 - `Parking/standstill time` (H:MM / HH:MM, must be ≤ total; default `0:00`)
 - `Airport zone` (checkbox)
 - Fuel model (for tariffs where fuel is not included):
-  - `Fuel price (€/L)` (default: configurable)
-  - `Consumption (L/100km)` (default: configurable)
+  - `E95 price (€/L)` (default: configurable)
+  - `Diesel price (€/L)` (default: configurable)
+  - `Consumption override (L/100km)` (optional global override; when disabled, use per-vehicle defaults)
 
 User warning
 - Assumes **one‑way**. If returning, user should add return time/distance to inputs.
@@ -97,6 +98,16 @@ Total = days * daily_price + (optional km overage) + fees + airport + fuel (if n
 
 ## Fuel Cost
 Apply when an option marks `fuel_included = FALSE`:
+- Determine `fuel_type` from the vehicle (`petrol`/`diesel`/`ev`; hybrids treated as petrol).
+- Determine `consumption_l_per_100km`:
+  - If override is enabled and non-zero: use override.
+  - Else: use the vehicle’s `consumption_l_per_100km_default` (worst-case / least efficient published figure when available).
+  - Else: fallback to `8`.
+- Apply Riga adjustment multiplier: `consumption_l_per_100km *= 1.15` (hardcoded; not user-editable).
+- Determine `fuel_price_per_l`:
+  - petrol → `E95 price`
+  - diesel → `Diesel price`
+  - ev → `0` (no self-fueling modeled yet)
 - `fuel_cost = dist_km * (consumption_l_per_100km / 100) * fuel_price_per_l`
 Round to €0.01 and add to total.
 
@@ -130,6 +141,10 @@ One row in `web/data/options.tsv` represents one purchasable/choosable pricing o
 - Snowboard fit metadata: `snowboard_fit` (`0`/`1`/`2`/blank) and `snowboard_source_url`
   - Baseline: ~163cm bulky snowboard bag with boots; front passenger usable.
   - Filter matches `>= 1`; blank means “unknown” and is treated the same as `0` by the filter.
+- Fuel metadata:
+  - `fuel_type`: `petrol` / `diesel` / `ev` (hybrids treated as petrol)
+  - `consumption_l_per_100km_default`: consumption estimate used when fuel is not included (blank for EV)
+  - `consumption_source_url`: source link for the estimate
 
 Core columns
 - IDs: `provider_id`, `vehicle_id`, `option_id`, `option_name`, `option_type` (`PAYG`/`PACKAGE`/`DAILY`)
@@ -173,6 +188,9 @@ Flags / notes
 2) Add vehicles in `web/data/vehicles.tsv`.
    - If you add new vehicles and don’t know snowboard fitment yet, leave `snowboard_fit` / `snowboard_source_url` blank.
    - Use `uv run python scripts/snowboard_queue.py` to generate a PR checklist of missing snowboard metadata.
+   - If you don’t know fuel metadata yet, leave `fuel_type` / `consumption_l_per_100km_default` blank.
+   - Use `uv run python scripts/consumption_queue.py` to generate a PR checklist of missing fuel metadata.
+   - Optional helper: `uv run python scripts/fill_consumption.py --apply` to auto-fill some values from known sources.
 3) Create option rows in `web/data/options.tsv` for each tariff/package/daily rental on:
    - CarGuru: `https://carguru.lv/rates`
    - CityBee: `https://citybee.lv/lv/cenas/` and `https://citybee.lv/lv/pakas/`

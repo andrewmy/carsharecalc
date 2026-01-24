@@ -129,8 +129,9 @@ function snapshotInputsFromDom() {
     parkingTime: $('parkingTime').value,
     distanceKm: $('distanceKm').value,
     airport: $('airport').checked,
-    fuelPrice: $('fuelPrice').value,
-    consumption: $('consumption').value,
+    fuelPriceE95: $('fuelPriceE95').value,
+    fuelPriceDiesel: $('fuelPriceDiesel').value,
+    consumptionOverride: $('consumptionOverride').value,
     q: $('q').value,
     providerFilter: $('providerFilter').value,
     snowboardFilter: $('snowboardFilter').checked,
@@ -146,8 +147,17 @@ function applyInputsToDom(snapshot) {
   if (typeof snapshot.parkingTime === 'string') $('parkingTime').value = snapshot.parkingTime;
   if (snapshot.distanceKm != null) $('distanceKm').value = String(snapshot.distanceKm);
   if (typeof snapshot.airport === 'boolean') $('airport').checked = snapshot.airport;
-  if (snapshot.fuelPrice != null) $('fuelPrice').value = String(snapshot.fuelPrice);
-  if (snapshot.consumption != null) $('consumption').value = String(snapshot.consumption);
+  // Backwards-compat (inputs v1 -> v2)
+  if (snapshot.fuelPriceE95 == null && snapshot.fuelPrice != null) {
+    $('fuelPriceE95').value = String(snapshot.fuelPrice);
+    $('fuelPriceDiesel').value = String(snapshot.fuelPrice);
+  }
+  if (snapshot.consumptionOverride == null && snapshot.consumption != null) {
+    $('consumptionOverride').value = String(snapshot.consumption);
+  }
+  if (snapshot.fuelPriceE95 != null) $('fuelPriceE95').value = String(snapshot.fuelPriceE95);
+  if (snapshot.fuelPriceDiesel != null) $('fuelPriceDiesel').value = String(snapshot.fuelPriceDiesel);
+  if (snapshot.consumptionOverride != null) $('consumptionOverride').value = String(snapshot.consumptionOverride);
   if (typeof snapshot.q === 'string') $('q').value = snapshot.q;
   if (typeof snapshot.providerFilter === 'string') $('providerFilter').value = snapshot.providerFilter;
   if (typeof snapshot.snowboardFilter === 'boolean') $('snowboardFilter').checked = snapshot.snowboardFilter;
@@ -186,10 +196,22 @@ function buildContextFromInputs(data) {
 
   const distKm = ceilInt(Number($('distanceKm').value || 0));
   const airport = $('airport').checked;
-  const fuelPrice = Number($('fuelPrice').value || 0);
-  const consumption = Number($('consumption').value || 0);
+  const fuelPriceE95 = Number($('fuelPriceE95').value || 0);
+  const fuelPriceDiesel = Number($('fuelPriceDiesel').value || 0);
+  const consumptionOverride = Number($('consumptionOverride').value || 0);
+  const consumptionOverrideEnabled = $('consumptionOverrideEnabled').checked;
 
-  return createBaseContext({ start, totalMin, parkingMin, distKm, airport, fuelPrice, consumption });
+  return createBaseContext({
+    start,
+    totalMin,
+    parkingMin,
+    distKm,
+    airport,
+    fuelPriceE95,
+    fuelPriceDiesel,
+    consumptionOverride,
+    consumptionOverrideEnabled,
+  });
 }
 
 function buildProviderOptions(providerId, options) {
@@ -453,6 +475,28 @@ function formatCalcLine(b) {
   const fees = Number(b.fees_eur || 0);
   if (fees > 0) lines.push(t('calc_fees', { eur: fmtEur(fees) }));
 
+  const fuel = Number(b.fuel_eur || 0);
+  if (fuel > 0) {
+    const cons = Number(m.fuel_consumption_l_per_100km_used || 0);
+    const price = Number(m.fuel_price_eur_per_l || 0);
+    const src = String(m.fuel_consumption_source || '').trim().toLowerCase();
+    const srcSuffix =
+      src === 'override'
+        ? ` ${t('fuel_src_override')}`
+        : src === 'vehicle'
+          ? ` ${t('fuel_src_vehicle')}`
+          : src === 'fallback'
+            ? ` ${t('fuel_src_fallback')}`
+            : '';
+    lines.push(
+      t('calc_fuel', {
+        src: srcSuffix,
+        expr: `${m.total_km ?? ''} km × ${fmtRate(cons, 1)} L/100km × €${fmtRate(price)}/L`,
+        eur: fmtEur(fuel),
+      }),
+    );
+  }
+
   const minTotal = Number(m.min_total_eur || 0);
   const minAdded = Number(b.min_added_eur || 0);
   if (minTotal > 0) {
@@ -572,8 +616,10 @@ function setDefaultInputs() {
   $('parkingTime').value = '0:00';
   $('distanceKm').value = '10';
   $('airport').checked = false;
-  $('fuelPrice').value = '1.70';
-  $('consumption').value = '7.5';
+  $('fuelPriceE95').value = '1.70';
+  $('fuelPriceDiesel').value = '1.70';
+  $('consumptionOverride').value = '8';
+  $('consumptionOverrideEnabled').checked = false;
   $('q').value = '';
   $('providerFilter').value = '';
   $('snowboardFilter').checked = false;
@@ -596,7 +642,7 @@ function wireInputs(defaults) {
     saveInputsToLocalStorage(snapshotInputsFromDom());
     recalc(defaults);
   };
-  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPrice','consumption','q','providerFilter','snowboardFilter','limit']) {
+  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPriceE95','fuelPriceDiesel','consumptionOverride','consumptionOverrideEnabled','q','providerFilter','snowboardFilter','limit']) {
     $(id).addEventListener('input', onChange);
     $(id).addEventListener('change', onChange);
   }

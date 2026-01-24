@@ -15,6 +15,9 @@ DEFAULT_VEHICLES_HEADER = [
     "vehicle_class",
     "snowboard_fit",
     "snowboard_source_url",
+    "fuel_type",
+    "consumption_l_per_100km_default",
+    "consumption_source_url",
 ]
 
 

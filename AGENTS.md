@@ -50,6 +50,10 @@ Spec:
 
 - Source-of-truth lives in `web/data/*.tsv`.
 - Bolt Drive data is often manual (in-app); add new vehicles/options by appending TSV rows.
+- When adding a new vehicle in `web/data/vehicles.tsv`, usually research and fill:
+  - Snowboard fit: `snowboard_fit` + `snowboard_source_url`
+  - Fuel metadata: `fuel_type` (`petrol`/`diesel`/`ev`, hybrids treated as petrol) + `consumption_l_per_100km_default` (blank for EV) + `consumption_source_url`
+  - Helpers: `uv run python scripts/snowboard_queue.py`, `uv run python scripts/consumption_queue.py`, and optionally `uv run python scripts/fill_consumption.py --apply`
 - The app supports local overrides via “Advanced” (TSV pasted into a dialog; saved to `localStorage`).
 
 ## Commit & Pull Request Guidelines

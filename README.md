@@ -31,6 +31,11 @@ Update CarGuru/CityBee data (Bolt is manual):
 - `uv run python scripts/import_vehicles.py`
 - `uv run python scripts/import_options.py`
 
+Fuel consumption metadata helpers (optional):
+
+- `uv run python scripts/consumption_queue.py`
+- `uv run python scripts/fill_consumption.py --apply`
+
 The app also supports local TSV overrides via the **Advanced** dialog (saved in browser localStorage).
 
 ## Localization

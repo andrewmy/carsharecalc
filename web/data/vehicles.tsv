@@ -1,43 +1,43 @@
-provider_id	vehicle_id	vehicle_name	vehicle_class	snowboard_fit	snowboard_source_url
-bolt	bolt_yaris_cross	Toyota Yaris Cross		1	https://www.carwow.co.uk/toyota/yaris-cross
-bolt	bolt_vw_golf_diesel	VW Golf (Diesel)		2	https://www.carwow.co.uk/volkswagen/golf
-bolt	bolt_vw_t_cross	VW T-Cross		1	https://www.carwow.co.uk/volkswagen/t-cross
-bolt	bolt_vw_tayron	VW Tayron		2	https://www.carwow.co.uk/volkswagen/tayron
-carguru	carguru_37	Lucky Ride cars		0	https://carguru.lv
-carguru	carguru_15	Nissan Juke		0	https://www.carwow.co.uk/nissan/juke
-carguru	carguru_16	Nissan Qashqai		1	https://www.carwow.co.uk/nissan/qashqai
-carguru	carguru_24	Nissan Qashqai e-power		1	https://www.carwow.co.uk/nissan/qashqai
-carguru	carguru_35	Qashqai C24		1	https://www.carwow.co.uk/nissan/qashqai
-carguru	carguru_27	Tesla 3 Performance		1	https://www.carwow.co.uk/tesla/model-3
-carguru	carguru_26	Tesla Model 3 LR		1	https://www.carwow.co.uk/tesla/model-3
-carguru	carguru_25	Tesla Model 3 SR		1	https://www.carwow.co.uk/tesla/model-3
-carguru	carguru_29	Tesla Model Y LR		2	https://www.carwow.co.uk/tesla/model-y
-carguru	carguru_28	Tesla Model Y SR		2	https://www.carwow.co.uk/tesla/model-y
-carguru	carguru_1	Toyota C-HR		1	https://www.carwow.co.uk/toyota/c-hr
-carguru	carguru_33	Toyota C-HR Mesa		1	https://www.carwow.co.uk/toyota/c-hr
-carguru	carguru_17	Toyota Corolla HB		0	https://www.carwow.co.uk/toyota/corolla
-carguru	carguru_5	Toyota Yaris		0	https://www.carwow.co.uk/toyota/yaris
-citybee	citybee_25156	Fiat Ducato	cargo	2	https://www.parkers.co.uk/fiat/ducato/
-citybee	citybee_10156	Ford Transit	cargo	2	https://www.parkers.co.uk/ford/transit/
-citybee	citybee_9662	Renault Master	cargo	2	https://www.parkers.co.uk/renault/master/
-citybee	citybee_25309	MG ZS	crossover	1	https://www.carwow.co.uk/mg/zs
-citybee	citybee_10245	Nissan Qashqai	crossover	1	https://www.carwow.co.uk/nissan/qashqai
-citybee	citybee_11384	Seat Ateca	crossover	1	https://www.carwow.co.uk/seat/ateca
-citybee	citybee_10277	Toyota C-HR	crossover	1	https://www.carwow.co.uk/toyota/c-hr
-citybee	citybee_25118	Toyota Corolla Cross	crossover	1	https://www.carwow.co.uk/toyota/corolla-cross
-citybee	citybee_10168	VW T-Roc	crossover	1	https://www.carwow.co.uk/volkswagen/t-roc
-citybee	citybee_4633	Volkswagen T-Cross	crossover	1	https://www.carwow.co.uk/volkswagen/t-cross
-citybee	citybee_10278	Volkswagen Taigo	crossover	1	https://www.carwow.co.uk/volkswagen/taigo
-citybee	citybee_11117	Ford Focus Wagon	estates	2	https://www.carwow.co.uk/ford/focus
-citybee	citybee_11445	Toyota Corolla Touring	estates	2	https://www.carwow.co.uk/toyota/corolla
-citybee	citybee_9512	BMW 118i	hatchbacks	0	https://www.carwow.co.uk/bmw/1-series
-citybee	citybee_10170	Ford Focus	hatchbacks	0	https://www.carwow.co.uk/ford/focus
-citybee	citybee_11421	Ford Puma	hatchbacks	0	https://www.carwow.co.uk/ford/puma
-citybee	citybee_11360	Peugeot 308	hatchbacks	0	https://www.carwow.co.uk/peugeot/308
-citybee	citybee_10421	Skoda Fabia	hatchbacks	0	https://www.carwow.co.uk/skoda/fabia
-citybee	citybee_4627	Toyota Corolla	hatchbacks	0	https://www.carwow.co.uk/toyota/corolla
-citybee	citybee_4626	Toyota Yaris	hatchbacks	0	https://www.carwow.co.uk/toyota/yaris
-citybee	citybee_10213	Ford Kuga	suv	2	https://www.carwow.co.uk/ford/kuga
-citybee	citybee_10092	Skoda Kamiq	suv	1	https://www.carwow.co.uk/skoda/kamiq
-citybee	citybee_11420	Skoda Karoq	suv	2	https://www.carwow.co.uk/skoda/karoq
-citybee	citybee_11499	Volkswagen Tiguan	suv	2	https://www.carwow.co.uk/volkswagen/tiguan
+provider_id	vehicle_id	vehicle_name	vehicle_class	snowboard_fit	snowboard_source_url	fuel_type	consumption_l_per_100km_default	consumption_source_url
+bolt	bolt_yaris_cross	Toyota Yaris Cross		1	https://www.carwow.co.uk/toyota/yaris-cross	petrol	5.1	https://www.carwow.co.uk/toyota/yaris-cross
+bolt	bolt_vw_golf_diesel	VW Golf (Diesel)		2	https://www.carwow.co.uk/volkswagen/golf	diesel	5.6	https://www.carwow.co.uk/volkswagen/golf
+bolt	bolt_vw_t_cross	VW T-Cross		1	https://www.carwow.co.uk/volkswagen/t-cross	petrol	6.1	https://www.carwow.co.uk/volkswagen/t-cross
+bolt	bolt_vw_tayron	VW Tayron		2	https://www.carwow.co.uk/volkswagen/tayron	petrol	8.6	https://www.carwow.co.uk/volkswagen/tayron
+carguru	carguru_37	Lucky Ride cars		0	https://carguru.lv	petrol		
+carguru	carguru_15	Nissan Juke		0	https://www.carwow.co.uk/nissan/juke	petrol	6.2	https://www.carwow.co.uk/nissan/juke
+carguru	carguru_16	Nissan Qashqai		1	https://www.carwow.co.uk/nissan/qashqai	petrol	6.9	https://www.carwow.co.uk/nissan/qashqai
+carguru	carguru_24	Nissan Qashqai e-power		1	https://www.carwow.co.uk/nissan/qashqai	petrol	6.9	https://www.carwow.co.uk/nissan/qashqai
+carguru	carguru_35	Qashqai C24		1	https://www.carwow.co.uk/nissan/qashqai	petrol	6.9	https://www.carwow.co.uk/nissan/qashqai
+carguru	carguru_27	Tesla 3 Performance		1	https://www.carwow.co.uk/tesla/model-3	ev		
+carguru	carguru_26	Tesla Model 3 LR		1	https://www.carwow.co.uk/tesla/model-3	ev		
+carguru	carguru_25	Tesla Model 3 SR		1	https://www.carwow.co.uk/tesla/model-3	ev		
+carguru	carguru_29	Tesla Model Y LR		2	https://www.carwow.co.uk/tesla/model-y	ev		
+carguru	carguru_28	Tesla Model Y SR		2	https://www.carwow.co.uk/tesla/model-y	ev		
+carguru	carguru_1	Toyota C-HR		1	https://www.carwow.co.uk/toyota/c-hr	petrol	4.9	https://www.carwow.co.uk/toyota/c-hr
+carguru	carguru_33	Toyota C-HR Mesa		1	https://www.carwow.co.uk/toyota/c-hr	petrol	4.9	https://www.carwow.co.uk/toyota/c-hr
+carguru	carguru_17	Toyota Corolla HB		0	https://www.carwow.co.uk/toyota/corolla	petrol	4.7	https://www.carwow.co.uk/toyota/corolla
+carguru	carguru_5	Toyota Yaris		0	https://www.carwow.co.uk/toyota/yaris	petrol	4.2	https://www.carwow.co.uk/toyota/yaris
+citybee	citybee_25156	Fiat Ducato	cargo	2	https://www.parkers.co.uk/fiat/ducato/	diesel	7.3	https://www.engineindetail.com/pa/fiat-ducato-van-30-l2h2-160-multijet-2019
+citybee	citybee_10156	Ford Transit	cargo	2	https://www.parkers.co.uk/ford/transit/	diesel	7.7	https://www.engineindetail.com/pa/ford-transit-custom-estate-wagon-340-l2-2-0-ecoblue-mild-hybrid-trend-2022
+citybee	citybee_9662	Renault Master	cargo	2	https://www.parkers.co.uk/renault/master/	diesel	8.1	https://www.auto-data.net/en/renault-master-iii-phase-iii-2019-panel-van-2.3-energy-dci-180hp-l1h2-40037
+citybee	citybee_25309	MG ZS	crossover	1	https://www.carwow.co.uk/mg/zs	petrol	6.5	https://www.carwow.co.uk/mg/zs
+citybee	citybee_10245	Nissan Qashqai	crossover	1	https://www.carwow.co.uk/nissan/qashqai	petrol	6.9	https://www.carwow.co.uk/nissan/qashqai
+citybee	citybee_11384	Seat Ateca	crossover	1	https://www.carwow.co.uk/seat/ateca	petrol	6.7	https://www.carwow.co.uk/seat/ateca
+citybee	citybee_10277	Toyota C-HR	crossover	1	https://www.carwow.co.uk/toyota/c-hr	petrol	4.9	https://www.carwow.co.uk/toyota/c-hr
+citybee	citybee_25118	Toyota Corolla Cross	crossover	1	https://www.carwow.co.uk/toyota/corolla-cross	petrol	4.5	https://www.auto-data.net/en/toyota-corolla-cross-facelift-2024-1.8-140hp-hybrid-e-cvt-55141
+citybee	citybee_10168	VW T-Roc	crossover	1	https://www.carwow.co.uk/volkswagen/t-roc	petrol	6.3	https://www.carwow.co.uk/volkswagen/t-roc
+citybee	citybee_4633	Volkswagen T-Cross	crossover	1	https://www.carwow.co.uk/volkswagen/t-cross	petrol	6.1	https://www.carwow.co.uk/volkswagen/t-cross
+citybee	citybee_10278	Volkswagen Taigo	crossover	1	https://www.carwow.co.uk/volkswagen/taigo	petrol	5.8	https://www.carwow.co.uk/volkswagen/taigo
+citybee	citybee_11117	Ford Focus Wagon	estates	2	https://www.carwow.co.uk/ford/focus	petrol	5.3	https://www.carwow.co.uk/ford/focus
+citybee	citybee_11445	Toyota Corolla Touring	estates	2	https://www.carwow.co.uk/toyota/corolla	petrol	4.7	https://www.carwow.co.uk/toyota/corolla
+citybee	citybee_9512	BMW 118i	hatchbacks	0	https://www.carwow.co.uk/bmw/1-series	petrol	7.6	https://www.carwow.co.uk/bmw/1-series
+citybee	citybee_10170	Ford Focus	hatchbacks	0	https://www.carwow.co.uk/ford/focus	petrol	5.3	https://www.carwow.co.uk/ford/focus
+citybee	citybee_11421	Ford Puma	hatchbacks	0	https://www.carwow.co.uk/ford/puma	petrol	5.7	https://www.carwow.co.uk/ford/puma
+citybee	citybee_11360	Peugeot 308	hatchbacks	0	https://www.carwow.co.uk/peugeot/308	petrol	4.7	https://www.carwow.co.uk/peugeot/308
+citybee	citybee_10421	Skoda Fabia	hatchbacks	0	https://www.carwow.co.uk/skoda/fabia	petrol	5.6	https://www.carwow.co.uk/skoda/fabia
+citybee	citybee_4627	Toyota Corolla	hatchbacks	0	https://www.carwow.co.uk/toyota/corolla	petrol	4.7	https://www.carwow.co.uk/toyota/corolla
+citybee	citybee_4626	Toyota Yaris	hatchbacks	0	https://www.carwow.co.uk/toyota/yaris	petrol	4.2	https://www.carwow.co.uk/toyota/yaris
+citybee	citybee_10213	Ford Kuga	suv	2	https://www.carwow.co.uk/ford/kuga	petrol	6.4	https://www.carwow.co.uk/ford/kuga
+citybee	citybee_10092	Skoda Kamiq	suv	1	https://www.carwow.co.uk/skoda/kamiq	petrol	5.9	https://www.carwow.co.uk/skoda/kamiq
+citybee	citybee_11420	Skoda Karoq	suv	2	https://www.carwow.co.uk/skoda/karoq	petrol	7.7	https://www.carwow.co.uk/skoda/karoq
+citybee	citybee_11499	Volkswagen Tiguan	suv	2	https://www.carwow.co.uk/volkswagen/tiguan	petrol	8.4	https://www.carwow.co.uk/volkswagen/tiguan

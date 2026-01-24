@@ -202,12 +202,15 @@ body::before{
   align-items:center;
 }
 .field--check input[type="checkbox"]{margin-top:0}
-.field--inline{grid-column: span 12; display:grid; grid-template-columns: 220px 220px 1fr; align-items:start; gap:10px}
+.field--inline{grid-column: span 12; display:grid; grid-template-columns: 220px 220px 240px 1fr; align-items:start; gap:10px}
 .field--inline > div:not(.field__hint){display:flex;flex-direction:column;gap:6px}
 .field__label{font-size:13px;color:var(--labelColor)}
 .field__hint{font-size:12px;color:var(--muted)}
 .field input[type="checkbox"]{width:18px;height:18px}
 .field--inline .field__hint{align-self:start}
+.checkInline{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.checkInline input{margin:0}
+.field__subhint{font-size:12px;color:var(--muted);line-height:1.35}
 
 @media (min-width: 821px){
   /* In the 3-column layout, align the hint to the inputs (not to the labels). */

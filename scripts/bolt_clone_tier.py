@@ -103,6 +103,9 @@ def main(argv: list[str]) -> int:
         help="vehicles.tsv snowboard_fit (0/1/2/blank). Baseline: ~163cm bulky bag with boots; front passenger usable.",
     )
     ap.add_argument("--snowboard-source-url", default="", help="vehicles.tsv snowboard_source_url (optional)")
+    ap.add_argument("--fuel-type", default="", help="vehicles.tsv fuel_type (petrol/diesel/ev/blank). Hybrids treated as petrol.")
+    ap.add_argument("--consumption", default="", help="vehicles.tsv consumption_l_per_100km_default (number/blank). EVs should be blank.")
+    ap.add_argument("--consumption-source-url", default="", help="vehicles.tsv consumption_source_url (optional)")
 
     ap.add_argument("--as-of", default="", help="If set (YYYY-MM-DD), updates/annotates notes with this date.")
     ap.add_argument("--skip", action="append", default=[], help="Skip cloning a specific option_id from the source (repeatable).")
@@ -139,6 +142,21 @@ def main(argv: list[str]) -> int:
     snowboard_fit = normalize_snowboard_fit(args.snowboard_fit)
     vehicle_class = (args.vehicle_class or "").strip()
     snowboard_source_url = (args.snowboard_source_url or "").strip()
+    fuel_type = (args.fuel_type or "").strip().lower()
+    if fuel_type not in {"", "petrol", "diesel", "ev"}:
+        print("--fuel-type must be petrol/diesel/ev/blank", file=sys.stderr)
+        return 2
+    consumption = (args.consumption or "").strip()
+    if consumption != "":
+        try:
+            n = float(consumption)
+        except ValueError:
+            print("--consumption must be a number or blank", file=sys.stderr)
+            return 2
+        if not (n > 0):
+            print("--consumption must be > 0 or blank", file=sys.stderr)
+            return 2
+    consumption_source_url = (args.consumption_source_url or "").strip()
 
     vehicles = read_tsv(vehicles_path)
     options = read_tsv(options_path)
@@ -150,6 +168,9 @@ def main(argv: list[str]) -> int:
         "vehicle_class",
         "snowboard_fit",
         "snowboard_source_url",
+        "fuel_type",
+        "consumption_l_per_100km_default",
+        "consumption_source_url",
     ):
         if col not in vehicles.header:
             print(f"vehicles.tsv missing expected column: {col}", file=sys.stderr)
@@ -245,6 +266,9 @@ def main(argv: list[str]) -> int:
             "vehicle_class": vehicle_class,
             "snowboard_fit": snowboard_fit,
             "snowboard_source_url": snowboard_source_url,
+            "fuel_type": fuel_type,
+            "consumption_l_per_100km_default": consumption,
+            "consumption_source_url": consumption_source_url,
         }
     )
 

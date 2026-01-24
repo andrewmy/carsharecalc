@@ -26,3 +26,6 @@ Update data:
 - Pull the latest CarGuru/CityBee lists into `web/data/`:
   - `uv run python scripts/import_vehicles.py`
   - `uv run python scripts/import_options.py`
+
+Vehicle metadata columns are append-only; see `docs/trip-price-calculator-spec.md` for schema.
+Fuel-related fields live in `web/data/vehicles.tsv` (`fuel_type`, `consumption_l_per_100km_default`, `consumption_source_url`).

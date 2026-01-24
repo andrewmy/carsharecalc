@@ -24,6 +24,22 @@ Prints a PR-ready checklist of vehicles where `snowboard_fit` is blank in `web/d
 
 - `uv run python scripts/snowboard_queue.py`
 
+## `consumption_queue.py`
+
+Prints a PR-ready checklist of vehicles missing `fuel_type` and/or `consumption_l_per_100km_default` in `web/data/vehicles.tsv`.
+
+- `uv run python scripts/consumption_queue.py`
+
+## `fill_consumption.py`
+
+Semi-automated helper that fills `fuel_type` and `consumption_l_per_100km_default` from known sources.
+Currently supports Carwow model pages by converting their displayed MPG range (uses worst-case / least efficient end to avoid underestimating). The app applies an additional hardcoded Riga multiplier (×1.15) at runtime.
+
+- Dry-run:
+  - `uv run python scripts/fill_consumption.py`
+- Apply to `web/data/vehicles.tsv`:
+  - `uv run python scripts/fill_consumption.py --apply`
+
 ## `bolt_clone_tier.py`
 
 Clones all **Bolt** `web/data/options.tsv` rows from a tier representative vehicle to a new Bolt vehicle_id.

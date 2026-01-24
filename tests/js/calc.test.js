@@ -40,8 +40,10 @@ test('Bolt PAYG caps time-only (not time+km)', () => {
     parkingMin: 150,
     distKm: 140,
     airport: false,
-    fuelPrice: 1.5,
-    consumption: 9,
+    fuelPriceE95: 1.5,
+    fuelPriceDiesel: 1.5,
+    consumptionOverride: 9,
+    consumptionOverrideEnabled: false,
   });
 
   const ctx = {
@@ -82,8 +84,10 @@ test('Bolt package charges overage minutes and km at PAYG rates', () => {
     parkingMin: 0,
     distKm: 6,
     airport: false,
-    fuelPrice: 0,
-    consumption: 0,
+    fuelPriceE95: 0,
+    fuelPriceDiesel: 0,
+    consumptionOverride: 0,
+    consumptionOverrideEnabled: false,
   });
   const ctx = { ...base, driveDayMin: 61, driveNightMin: 0, parkDayMin: 0, parkNightMin: 0 };
 
@@ -114,8 +118,10 @@ test('CarGuru PAYG/PACKAGE applies default service fee when fixed_fee_eur is mis
     parkingMin: 0,
     distKm: 0,
     airport: false,
-    fuelPrice: 0,
-    consumption: 0,
+    fuelPriceE95: 0,
+    fuelPriceDiesel: 0,
+    consumptionOverride: 0,
+    consumptionOverrideEnabled: false,
   });
   const ctx = { ...base, driveDayMin: 1, driveNightMin: 0, parkDayMin: 0, parkNightMin: 0 };
   const priced = computeOptionPrice(ctx, option);
@@ -152,7 +158,7 @@ test('TSV parsing + normalizeData produce expected structures', () => {
 test('computeAll ranks options by total_eur', () => {
   const data = {
     providers: [{ provider_id: 'bolt', provider_name: 'Bolt', night_start: '22:00', night_end: '06:00' }],
-    vehiclesById: new Map([['bolt_yaris', { vehicle_name: 'Yaris', provider_id: 'bolt' }]]),
+    vehiclesById: new Map([['bolt_yaris', { vehicle_name: 'Yaris', provider_id: 'bolt', fuel_type: 'petrol', consumption_l_per_100km_default: 6 }]]),
     options: [
       { provider_id: 'bolt', vehicle_id: 'bolt_yaris', option_id: 'a', option_name: 'A', option_type: 'PAYG', drive_day_min_rate_eur: '1', km_rate_eur: '0', fuel_included: 'TRUE' },
       { provider_id: 'bolt', vehicle_id: 'bolt_yaris', option_id: 'b', option_name: 'B', option_type: 'PAYG', drive_day_min_rate_eur: '0', km_rate_eur: '0', fuel_included: 'TRUE' },
@@ -164,8 +170,10 @@ test('computeAll ranks options by total_eur', () => {
     parkingMin: 0,
     distKm: 0,
     airport: false,
-    fuelPrice: 0,
-    consumption: 0,
+    fuelPriceE95: 0,
+    fuelPriceDiesel: 0,
+    consumptionOverride: 0,
+    consumptionOverrideEnabled: false,
   });
 
   const { results, errors } = computeAll(data, base, '');
@@ -174,3 +182,58 @@ test('computeAll ranks options by total_eur', () => {
   assert.equal(results[1].option_id, 'a');
 });
 
+test('fuel calculation uses fuel type, default/fallback, and optional override', () => {
+  const option = {
+    provider_id: 'bolt',
+    option_id: 'x',
+    option_type: 'PAYG',
+    trip_fee_eur: '0',
+    drive_day_min_rate_eur: '0',
+    park_day_min_rate_eur: '0',
+    km_rate_eur: '0',
+    included_km: '0',
+    fuel_included: 'FALSE',
+  };
+
+  const mkCtx = (overrides) => {
+    const base = createBaseContext({
+      start: new Date('2026-01-24T12:00:00'),
+      totalMin: 0,
+      parkingMin: 0,
+      distKm: 100,
+      airport: false,
+      fuelPriceE95: 2,
+      fuelPriceDiesel: 2.5,
+      consumptionOverride: 0,
+      consumptionOverrideEnabled: false,
+      ...overrides,
+    });
+    return { ...base, driveDayMin: 0, driveNightMin: 0, parkDayMin: 0, parkNightMin: 0 };
+  };
+
+  assert.equal(
+    computeOptionPrice(mkCtx(), option, { fuel_type: 'petrol', consumption_l_per_100km_default: 6 }).breakdown.fuel_eur,
+    13.8,
+  );
+  assert.equal(
+    computeOptionPrice(mkCtx(), option, { fuel_type: 'diesel', consumption_l_per_100km_default: 6 }).breakdown.fuel_eur,
+    17.25,
+  );
+  assert.equal(
+    computeOptionPrice(mkCtx(), option, { fuel_type: 'petrol', consumption_l_per_100km_default: null }).breakdown.fuel_eur,
+    18.4,
+  );
+  assert.equal(
+    computeOptionPrice(
+      mkCtx({ consumptionOverride: 10, consumptionOverrideEnabled: true }),
+      option,
+      { fuel_type: 'petrol', consumption_l_per_100km_default: 6 },
+    ).breakdown.fuel_eur,
+    23,
+  );
+  assert.equal(
+    computeOptionPrice(mkCtx({ consumptionOverride: 10, consumptionOverrideEnabled: true }), option, { fuel_type: 'ev' })
+      .breakdown.fuel_eur,
+    0,
+  );
+});

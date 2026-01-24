@@ -33,8 +33,11 @@ const STRINGS = {
     airport_label: 'Lidostas zona (paņemšana vai nodošana)',
     airport_hint: 'Dažiem atšķiras paņemšana vs nodošana (nākotnē)',
 
-    fuel_price_label: 'Degvielas cena (€/L)',
-    consumption_label: 'Patēriņš (L/100km)',
+    fuel_price_e95_label: 'E95 cena (€/L)',
+    fuel_price_diesel_label: 'Dīzeļa cena (€/L)',
+    consumption_override_label: 'Patēriņš (L/100km)',
+    consumption_override_enable: 'Pārrakstīt auto novērtējumu',
+    consumption_auto_hint: 'Auto novērtējums no publiskiem avotiem; sliktākā (lielākā patēriņa) vērtība ar Rīgas korekciju (×1.15), lai nenovērtētu izmaksas par zemu.',
     fuel_hint: 'Degvielas izmaksas pieskaita tikai, ja degviela nav iekļauta.',
 
     // Results
@@ -102,8 +105,12 @@ const STRINGS = {
     calc_km: ({ expr, eur }) => `Km: ${expr} = €${eur}`,
     calc_capped: ({ eur, cap, days }) => ` → ierobežots līdz €${eur} (${days}×€${cap}/dienā)`,
     calc_fees: ({ eur }) => `Maksas: €${eur}`,
+    calc_fuel: ({ src, expr, eur }) => `Degviela${src}: ${expr} = €${eur}`,
     calc_min_applied: ({ add, min }) => `Minimums: piemērots (+€${add} līdz €${min})`,
     calc_min_not_applied: ({ min }) => `Minimums: €${min} (nav piemērots)`,
+    fuel_src_override: '(pārrakstīts)',
+    fuel_src_vehicle: '(auto)',
+    fuel_src_fallback: '(noklusēti 8)',
 
     // PAYG bucket labels (used in breakdown calc lines)
     drive_day: 'Braukšana (diena):',
@@ -173,8 +180,11 @@ const STRINGS = {
     airport_label: 'Airport zone (either pickup or dropoff)',
     airport_hint: 'Some providers differ by pickup vs dropoff (future)',
 
-    fuel_price_label: 'Fuel price (€/L)',
-    consumption_label: 'Consumption (L/100km)',
+    fuel_price_e95_label: 'E95 price (€/L)',
+    fuel_price_diesel_label: 'Diesel price (€/L)',
+    consumption_override_label: 'Consumption override (L/100km)',
+    consumption_override_enable: 'Override auto estimate',
+    consumption_auto_hint: 'Auto estimate from public sources; worst-case (least efficient) value with Riga adjustment (×1.15) to avoid underestimating cost.',
     fuel_hint: 'Fuel cost is added only when fuel is not included.',
 
     results_title: 'Results',
@@ -237,8 +247,12 @@ const STRINGS = {
     calc_km: ({ expr, eur }) => `Km: ${expr} = €${eur}`,
     calc_capped: ({ eur, cap, days }) => ` → capped to €${eur} (${days}×€${cap}/day)`,
     calc_fees: ({ eur }) => `Fees: €${eur}`,
+    calc_fuel: ({ src, expr, eur }) => `Fuel${src}: ${expr} = €${eur}`,
     calc_min_applied: ({ add, min }) => `Minimum: applied (+€${add} to reach €${min})`,
     calc_min_not_applied: ({ min }) => `Minimum: €${min} (not applied)`,
+    fuel_src_override: '(override)',
+    fuel_src_vehicle: '(vehicle)',
+    fuel_src_fallback: '(fallback 8)',
 
     drive_day: 'Drive (day):',
     drive_night: 'Drive (night):',

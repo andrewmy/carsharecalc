@@ -85,11 +85,19 @@ export function allocateParkingNight(totalMin, parkingMin, nightMin) {
   return { parkNight, parkDay, driveNight, driveDay, dayMin };
 }
 
-export function computeOptionPrice(ctx, option) {
+export function computeOptionPrice(ctx, option, vehicle) {
   const n = (k) => toNumberMaybe(option[k]);
   const z = (k) => n(k) ?? 0;
 
   const optionType = String(option.option_type || '').trim().toUpperCase();
+
+  const RIGA_CONSUMPTION_FACTOR = 1.15;
+
+  const vehicleFuelType = (() => {
+    const raw = String(vehicle?.fuel_type ?? '').trim().toLowerCase();
+    if (raw === 'petrol' || raw === 'diesel' || raw === 'ev') return raw;
+    return 'petrol';
+  })();
 
   const unlock = z('unlock_fee_eur');
   const reservation = z('reservation_fee_eur');
@@ -133,7 +141,30 @@ export function computeOptionPrice(ctx, option) {
   const chargedKm = Math.max(0, ctx.distKm - includedKm);
   const paygKmEur = chargedKm * overKmRate;
 
-  const fuelEur = fuelIncluded ? 0 : (ctx.distKm * (ctx.consumption / 100) * ctx.fuelPrice);
+  const fuelFallbackConsumption = 8;
+  const resolveFuelPrice = (fuelType) => {
+    if (fuelType === 'diesel') return Number(ctx.fuelPriceDiesel || 0);
+    if (fuelType === 'petrol') return Number(ctx.fuelPriceE95 || 0);
+    return 0;
+  };
+  const resolveConsumption = () => {
+    if (vehicleFuelType === 'ev') return { value: 0, source: 'ev' };
+    const overrideEnabled = !!ctx.consumptionOverrideEnabled;
+    const overrideVal = Number(ctx.consumptionOverride || 0);
+    if (overrideEnabled && overrideVal > 0) return { value: overrideVal, source: 'override' };
+    const vehicleDefault = Number(vehicle?.consumption_l_per_100km_default || 0);
+    if (vehicleDefault > 0) return { value: vehicleDefault, source: 'vehicle' };
+    return { value: fuelFallbackConsumption, source: 'fallback' };
+  };
+
+  const fuelCtx = resolveConsumption();
+  const fuelConsumptionBase = Number(fuelCtx.value || 0);
+  const fuelConsumptionUsed = vehicleFuelType === 'ev' ? 0 : (fuelConsumptionBase * RIGA_CONSUMPTION_FACTOR);
+  const fuelPriceUsed = resolveFuelPrice(vehicleFuelType);
+  const fuelEur =
+    fuelIncluded || vehicleFuelType === 'ev'
+      ? 0
+      : (ctx.distKm * (fuelConsumptionUsed / 100) * fuelPriceUsed);
   const airportEur = ctx.airport ? airportFee : 0;
 
   let planEur = 0; // package/daily price (excludes time/km)
@@ -280,6 +311,13 @@ export function computeOptionPrice(ctx, option) {
         total_min: ctx.totalMin,
         total_km: ctx.distKm,
         days: ctx.days,
+        fuel_included: fuelIncluded,
+        fuel_type: vehicleFuelType,
+        fuel_price_eur_per_l: fuelPriceUsed,
+        fuel_consumption_l_per_100km_base: fuelConsumptionBase,
+        fuel_consumption_riga_factor: vehicleFuelType === 'ev' ? 0 : RIGA_CONSUMPTION_FACTOR,
+        fuel_consumption_l_per_100km_used: fuelConsumptionUsed,
+        fuel_consumption_source: fuelCtx.source,
         drive_day_min: ctx.driveDayMin,
         drive_night_min: ctx.driveNightMin,
         park_day_min: ctx.parkDayMin,
@@ -318,7 +356,17 @@ export function computeOptionPrice(ctx, option) {
   };
 }
 
-export function createBaseContext({ start, totalMin, parkingMin, distKm, airport, fuelPrice, consumption }) {
+export function createBaseContext({
+  start,
+  totalMin,
+  parkingMin,
+  distKm,
+  airport,
+  fuelPriceE95,
+  fuelPriceDiesel,
+  consumptionOverride,
+  consumptionOverrideEnabled,
+}) {
   const end = new Date(start.getTime() + totalMin * 60000);
   const days = Math.max(1, Math.ceil(totalMin / 1440));
   return {
@@ -329,8 +377,10 @@ export function createBaseContext({ start, totalMin, parkingMin, distKm, airport
     distKm,
     totalKm: distKm,
     airport: !!airport,
-    fuelPrice: Number(fuelPrice || 0),
-    consumption: Number(consumption || 0),
+    fuelPriceE95: Number(fuelPriceE95 || 0),
+    fuelPriceDiesel: Number(fuelPriceDiesel || 0),
+    consumptionOverride: Number(consumptionOverride || 0),
+    consumptionOverrideEnabled: !!consumptionOverrideEnabled,
     days,
   };
 }
@@ -357,6 +407,8 @@ export function computeAll(data, ctx, providerFilter) {
       vehicle_name: opt.vehicle_id,
       provider_id: providerId,
       snowboard_fit: 0,
+      fuel_type: 'petrol',
+      consumption_l_per_100km_default: null,
     };
 
     const nightMin = computeNightMinutes(ctx.start, ctx.end, provider.night_start, provider.night_end);
@@ -371,7 +423,7 @@ export function computeAll(data, ctx, providerFilter) {
       parkNightMin: alloc.parkNight,
     };
 
-    const priced = computeOptionPrice(perCtx, opt);
+    const priced = computeOptionPrice(perCtx, opt, veh);
     if (!priced.ok) {
       errors.push(`${providerId}/${opt.vehicle_id}/${opt.option_id}: ${priced.reason}`);
       continue;
