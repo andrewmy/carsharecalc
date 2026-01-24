@@ -16,7 +16,9 @@ Common commands (from repo root):
 
 - Install/sync Python deps: `uv sync`
 - Run the app locally: `npx --yes serve -l 8000 web` → open `http://localhost:8000/`
-- Unit tests (Node, no deps): `npm test`
+- Run all tests (if you have `just`): `just test`
+- Unit tests (JS, Node built-in runner): `npm test`
+- Unit tests (Python, stdlib `unittest`, via `uv`): `uv run python -m unittest discover -s tests/py -t .`
 - Refresh data (CarGuru + CityBee) into `web/data/`: `uv run python scripts/import_vehicles.py` and `uv run python scripts/import_options.py`
 - Generate app icons (favicon/PWA): `uv run python scripts/generate_favicon.py path/to/source.png`
 
@@ -40,6 +42,9 @@ Spec:
 
 - Before making non-trivial product/UI changes, clarify requirements with a short “interview” (questions first, code second).
 - Keep changes incremental and testable; prefer unit tests for pricing logic in `web/lib/`.
+- CI / GitHub Actions:
+  - Don’t change action major versions “just because”; only do it when needed to unblock CI or for an explicit request.
+  - If you’re unsure what the latest major version tag is for an action, verify it on the web before changing it.
 
 ## Data & Updates (Rates)
 

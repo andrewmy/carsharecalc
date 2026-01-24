@@ -94,7 +94,9 @@ Auditability:
 
 From repo root:
 
+- `just test` (or at least run both `npm test` and Python `unittest`)
 - `npm test`
+- `uv run python -m unittest discover -s tests/py -t .`
 - `npx --yes serve -l 8000 web` and sanity-check the UI
 
 ## Faster workflow: tiers (clone instead of re-entering 60+ rows)

@@ -117,7 +117,9 @@ Localization:
 - UI strings are edited in `web/lib/i18n.js` (data-driven vehicle/option names are not translated yet).
 
 Tests:
-- Unit tests use Node’s built-in runner: `npm test`.
+- JS unit tests use Node’s built-in runner: `npm test`.
+- Python unit tests use stdlib `unittest` (via `uv`): `uv run python -m unittest discover -s tests/py -t .`.
+- If you have `just`, run everything with: `just test`.
 
 ## Data Schema (TSV)
 One row in `web/data/options.tsv` represents one purchasable/choosable pricing option for a vehicle.
@@ -192,4 +194,4 @@ Flags / notes
 - Add discounts/subscriptions/promos and minimum/maximum caps where applicable.
 - Improve parking timeline modeling (parking at end vs explicit parking intervals).
 - Optional package stacking (explicitly off for MVP).
-- Add branch protection required checks (e.g., require `npm test` to pass) so deploy-to-Pages is effectively gated even if CI/deploy workflows are split.
+- Add branch protection required checks (e.g., require `npm test` and Python tests to pass) so deploy-to-Pages is effectively gated even if CI/deploy workflows are split.

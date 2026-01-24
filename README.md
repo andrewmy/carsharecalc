@@ -9,6 +9,7 @@ No-build web app to estimate and compare car sharing trip prices in **Riga** acr
 
 ## Tests
 
+- `just test` (runs JS + Python)
 - `npm test`
 - `uv run python -m unittest discover -s tests/py -t .`
 
