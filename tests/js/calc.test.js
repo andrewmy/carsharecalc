@@ -6,9 +6,9 @@ import {
   createBaseContext,
   computeOptionPrice,
   computeAll,
-} from '../web/lib/calc.js';
-import { parseTsv } from '../web/lib/tsv.js';
-import { normalizeData } from '../web/lib/data.js';
+} from '../../web/lib/calc.js';
+import { parseTsv } from '../../web/lib/tsv.js';
+import { normalizeData } from '../../web/lib/data.js';
 
 test('toNumberMaybe parses EU-style numbers', () => {
   assert.equal(toNumberMaybe('1.041'), 1041);
@@ -173,3 +173,4 @@ test('computeAll ranks options by total_eur', () => {
   assert.equal(results[0].option_id, 'b');
   assert.equal(results[1].option_id, 'a');
 });
+
