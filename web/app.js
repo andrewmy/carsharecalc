@@ -596,11 +596,10 @@ function wireSnowboardTooltips() {
       if (pressed) clearTimer(pressed);
       activePressPill = null;
     }
-    if (
-      (e.pointerType === 'touch' || e.pointerType === 'pen') &&
-      (!target || !target.closest || !target.closest('.tooltip'))
-    ) {
-      closeAll();
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const inTooltip = target && target.closest ? target.closest('.tooltip') : null;
+      const inPill = target && target.closest ? target.closest('.pill--tooltip') : null;
+      if (!inTooltip && !inPill) closeAll();
     }
   });
 
