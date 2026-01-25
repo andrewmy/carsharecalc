@@ -111,15 +111,8 @@
 
 *{box-sizing:border-box;-webkit-tap-highlight-color: transparent}
 html,body{height:100%}
-html{
-  background: var(--bg);
-  color-scheme: dark;
-}
-body{color-scheme: dark}
+html{background: var(--bg)}
 input,select,textarea,button{color-scheme: inherit}
-@media (prefers-color-scheme: light){
-  html,body{color-scheme: light}
-}
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
