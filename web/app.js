@@ -550,6 +550,7 @@ function wireClickableProviderPills(defaults) {
 function wireSnowboardTooltips() {
   const pressTimers = new WeakMap();
   const pressDelayMs = 450;
+  let activePressPill = null;
 
   function closeAll() {
     for (const tip of document.querySelectorAll('.tooltip.is-open')) {
@@ -578,6 +579,7 @@ function wireSnowboardTooltips() {
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
     if (!pill) return;
     if (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+    activePressPill = pill;
     clearTimer(pill);
     const timer = setTimeout(() => {
       openFor(pill);
@@ -589,9 +591,12 @@ function wireSnowboardTooltips() {
   document.addEventListener('pointerup', (e) => {
     const target = e.target;
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
-    if (pill && (e.pointerType === 'touch' || e.pointerType === 'pen')) {
-      clearTimer(pill);
-    } else if (
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const pressed = activePressPill || pill;
+      if (pressed) clearTimer(pressed);
+      activePressPill = null;
+    }
+    if (
       (e.pointerType === 'touch' || e.pointerType === 'pen') &&
       (!target || !target.closest || !target.closest('.tooltip'))
     ) {
@@ -602,8 +607,12 @@ function wireSnowboardTooltips() {
   document.addEventListener('pointercancel', (e) => {
     const target = e.target;
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
-    if (pill) clearTimer(pill);
-    if (e.pointerType === 'touch' || e.pointerType === 'pen') closeAll();
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const pressed = activePressPill || pill;
+      if (pressed) clearTimer(pressed);
+      activePressPill = null;
+      closeAll();
+    }
   });
 
   document.addEventListener('keydown', (e) => {
