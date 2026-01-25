@@ -318,7 +318,7 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 .table th{position:sticky;top:0;background: var(--tableHeadBg);backdrop-filter: blur(10px);text-align:left;font-size:12px;color:var(--muted)}
 .table td{font-size:13px}
 .table td.num,.table th.num{text-align:right;font-variant-numeric: tabular-nums}
-.rowTitle{display:flex;gap:10px;align-items:center}
+.rowTitle{display:flex;gap:10px;align-items:center;position:relative}
 .rowHint{margin-top:4px;font-size:12px;color:var(--muted);line-height:1.35}
 .pill{font-size:12px;border:1px solid var(--border);padding:2px 8px;border-radius:999px;color:var(--muted)}
 .pill--link{
@@ -344,6 +344,38 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 .pill--toggle:focus-visible{
   border-color: var(--accentBorderStrong);
   box-shadow: 0 0 0 3px var(--focusRing);
+}
+.pill--tooltip{
+  background: var(--panel);
+  cursor: help;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+.pill--tooltip:focus-visible{
+  border-color: var(--accentBorderStrong);
+  box-shadow: 0 0 0 3px var(--focusRing);
+}
+.tooltip{
+  position:absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  max-width: 260px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.3;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+  z-index: 3;
+  display:none;
+}
+.tooltip.is-open,
+.pill--tooltip:hover + .tooltip,
+.pill--tooltip:focus-visible + .tooltip{
+  display:block;
 }
 .details{
   margin-top:8px;

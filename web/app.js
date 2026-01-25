@@ -321,6 +321,7 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
     const sb = Number(row.snowboard_fit || 0) || 0;
     const sbIcon = sb >= 2 ? '🏂🏂' : sb >= 1 ? '🏂' : '';
     const sbTitle = sb >= 2 ? t('tt_snowboard_fit_2') : sb >= 1 ? t('tt_snowboard_fit_1') : '';
+    const sbTooltipId = `sb-tip-${i}`;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="muted">${i}</td>
@@ -332,7 +333,16 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
       <td>
         <div class="rowTitle">
           <div>${escapeHtml(row.vehicle_name)}</div>
-          ${sbIcon ? `<span class="pill" title="${escapeHtml(sbTitle)}">${sbIcon}</span>` : ''}
+          ${
+            sbIcon
+              ? `
+                <span class="pill pill--tooltip" data-tooltip-id="${sbTooltipId}" aria-describedby="${sbTooltipId}" aria-label="${escapeHtml(t('tt_snowboard_fit_label'))}" tabindex="0" role="img">
+                  ${sbIcon}
+                </span>
+                <span class="tooltip" role="tooltip" id="${sbTooltipId}">${escapeHtml(sbTitle)}</span>
+              `
+              : ''
+          }
         </div>
       </td>
       <td>
@@ -537,6 +547,78 @@ function wireClickableProviderPills(defaults) {
   });
 }
 
+function wireSnowboardTooltips() {
+  const pressTimers = new WeakMap();
+  const pressDelayMs = 450;
+  let activePressPill = null;
+
+  function closeAll() {
+    for (const tip of document.querySelectorAll('.tooltip.is-open')) {
+      tip.classList.remove('is-open');
+    }
+  }
+
+  function openFor(el) {
+    const tipId = el.dataset.tooltipId;
+    const tip = tipId ? document.getElementById(tipId) : null;
+    if (!tip) return;
+    closeAll();
+    tip.classList.add('is-open');
+  }
+
+  function clearTimer(el) {
+    const timer = pressTimers.get(el);
+    if (timer) {
+      clearTimeout(timer);
+      pressTimers.delete(el);
+    }
+  }
+
+  document.addEventListener('pointerdown', (e) => {
+    const target = e.target;
+    const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
+    if (!pill) return;
+    if (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+    activePressPill = pill;
+    clearTimer(pill);
+    const timer = setTimeout(() => {
+      openFor(pill);
+      pressTimers.delete(pill);
+    }, pressDelayMs);
+    pressTimers.set(pill, timer);
+  });
+
+  document.addEventListener('pointerup', (e) => {
+    const target = e.target;
+    const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const pressed = activePressPill || pill;
+      if (pressed) clearTimer(pressed);
+      activePressPill = null;
+    }
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const inTooltip = target && target.closest ? target.closest('.tooltip') : null;
+      const inPill = target && target.closest ? target.closest('.pill--tooltip') : null;
+      if (!inTooltip && !inPill) closeAll();
+    }
+  });
+
+  document.addEventListener('pointercancel', (e) => {
+    const target = e.target;
+    const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      const pressed = activePressPill || pill;
+      if (pressed) clearTimer(pressed);
+      activePressPill = null;
+      closeAll();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAll();
+  });
+}
+
 function wireLanguageDropdown(defaults) {
   const sel = $('lang');
   if (!sel) return;
@@ -699,6 +781,7 @@ async function main() {
   wireDataDialog(defaults);
   wireOptionTypeToggles(defaults);
   wireClickableProviderPills(defaults);
+  wireSnowboardTooltips();
   wireLanguageDropdown(defaults);
   wireInputs(defaults);
   recalc(defaults);
