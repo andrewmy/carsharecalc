@@ -579,6 +579,7 @@ function wireSnowboardTooltips() {
     const target = e.target;
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
     if (!pill) return;
+    if (e.pointerType && e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
     clearTimer(pill);
     const timer = setTimeout(() => {
       openFor(pill);
@@ -590,9 +591,12 @@ function wireSnowboardTooltips() {
   document.addEventListener('pointerup', (e) => {
     const target = e.target;
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
-    if (pill) {
+    if (pill && (e.pointerType === 'touch' || e.pointerType === 'pen')) {
       clearTimer(pill);
-    } else if (!target || !target.closest || !target.closest('.tooltip')) {
+    } else if (
+      (e.pointerType === 'touch' || e.pointerType === 'pen') &&
+      (!target || !target.closest || !target.closest('.tooltip'))
+    ) {
       closeAll();
     }
   });
@@ -601,7 +605,7 @@ function wireSnowboardTooltips() {
     const target = e.target;
     const pill = target && target.closest ? target.closest('.pill--tooltip') : null;
     if (pill) clearTimer(pill);
-    closeAll();
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') closeAll();
   });
 
   document.addEventListener('keydown', (e) => {
