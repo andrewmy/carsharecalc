@@ -122,6 +122,7 @@ const STRINGS = {
     tt_filter_provider: 'Filtrēt pēc kompānijas',
     tt_snowboard_fit_1: 'Snovborda soma (163 cm): der, bet šauri (pasažierim var būt neērti)',
     tt_snowboard_fit_2: 'Snovborda soma (163 cm): der labi (priekšējam pasažierim OK)',
+    tt_snowboard_fit_label: 'Snovborda somas piemērotība',
 
     // Errors
     err_start_required: 'Nepieciešams sākuma laiks.',
@@ -262,6 +263,7 @@ const STRINGS = {
     tt_filter_provider: 'Filter by provider',
     tt_snowboard_fit_1: 'Snowboard bag (163 cm): fits but tight (front passenger may be compromised)',
     tt_snowboard_fit_2: 'Snowboard bag (163 cm): fits well (front passenger OK)',
+    tt_snowboard_fit_label: 'Snowboard fit details',
 
     err_start_required: 'Start datetime is required.',
     err_start_invalid: 'Invalid start datetime.',
