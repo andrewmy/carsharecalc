@@ -43,3 +43,10 @@ The app also supports local TSV overrides via the **Advanced** dialog (saved in 
 - UI supports `LV`/`EN` (dropdown in the header).
 - User choice persists in localStorage; otherwise we detect browser language with fallback to Latvian.
 - Edit strings in `web/lib/i18n.js`.
+
+## Browser dark-mode overrides
+
+Some mobile browsers (notably Samsung Internet) offer a user-controlled “force dark mode for web pages.”
+When enabled, the browser can recolor pages after CSS is applied. This override cannot be fully
+prevented by app-side CSS or meta tags, so the only reliable fix is disabling the browser’s force-dark
+setting for the site.
