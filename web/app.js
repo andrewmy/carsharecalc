@@ -339,7 +339,7 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
                 <span class="pill pill--tooltip" data-tooltip-id="${sbTooltipId}" aria-describedby="${sbTooltipId}" aria-label="${escapeHtml(t('tt_snowboard_fit_label'))}" tabindex="0" role="img">
                   ${sbIcon}
                 </span>
-                <span class="tooltip" role="tooltip" id="${sbTooltipId}" aria-hidden="true">${escapeHtml(sbTitle)}</span>
+                <span class="tooltip" role="tooltip" id="${sbTooltipId}">${escapeHtml(sbTitle)}</span>
               `
               : ''
           }
@@ -554,7 +554,6 @@ function wireSnowboardTooltips() {
   function closeAll() {
     for (const tip of document.querySelectorAll('.tooltip.is-open')) {
       tip.classList.remove('is-open');
-      tip.setAttribute('aria-hidden', 'true');
     }
   }
 
@@ -564,7 +563,6 @@ function wireSnowboardTooltips() {
     if (!tip) return;
     closeAll();
     tip.classList.add('is-open');
-    tip.setAttribute('aria-hidden', 'false');
   }
 
   function clearTimer(el) {
