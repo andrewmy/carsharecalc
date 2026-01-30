@@ -214,3 +214,4 @@ Flags / notes
 - Improve parking timeline modeling (parking at end vs explicit parking intervals).
 - Optional package stacking (explicitly off for MVP).
 - Add branch protection required checks (e.g., require `npm test` and Python tests to pass) so deploy-to-Pages is effectively gated even if CI/deploy workflows are split.
+- Add UI-level tests for reset behavior, filters, and discounts.

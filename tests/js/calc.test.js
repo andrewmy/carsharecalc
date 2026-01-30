@@ -130,6 +130,74 @@ test('CarGuru PAYG/PACKAGE applies default service fee when fixed_fee_eur is mis
   assert.match(priced.breakdown.tooltips.fees, /Service fee: €\s*0\.99/);
 });
 
+test('discounts do not drop totals below min_total + fees/airport/fuel', () => {
+  const option = {
+    provider_id: 'bolt',
+    option_id: 'bolt_payg_discount',
+    option_type: 'PAYG',
+    trip_fee_eur: '0',
+    min_total_eur: '10',
+    drive_day_min_rate_eur: '1',
+    park_day_min_rate_eur: '0',
+    km_rate_eur: '0',
+    included_km: '0',
+    fuel_included: 'TRUE',
+  };
+
+  const base = createBaseContext({
+    start: new Date('2026-01-24T12:00:00'),
+    totalMin: 20,
+    parkingMin: 0,
+    distKm: 0,
+    airport: false,
+    fuelPriceE95: 0,
+    fuelPriceDiesel: 0,
+    consumptionOverride: 0,
+    consumptionOverrideEnabled: false,
+    discountBolt: 60,
+  });
+  const ctx = { ...base, driveDayMin: 20, driveNightMin: 0, parkDayMin: 0, parkNightMin: 0 };
+
+  const priced = computeOptionPrice(ctx, option);
+  assert.equal(priced.ok, true);
+  assert.equal(priced.total_eur, 10);
+  assert.equal(priced.breakdown.discount_eur, -10);
+});
+
+test('discount clamps percent + minutes to non-negative totals', () => {
+  const option = {
+    provider_id: 'citybee',
+    option_id: 'citybee_payg_discount',
+    option_type: 'PAYG',
+    trip_fee_eur: '0',
+    drive_day_min_rate_eur: '1',
+    park_day_min_rate_eur: '0',
+    km_rate_eur: '0',
+    included_km: '0',
+    fuel_included: 'TRUE',
+  };
+
+  const base = createBaseContext({
+    start: new Date('2026-01-24T12:00:00'),
+    totalMin: 10,
+    parkingMin: 0,
+    distKm: 0,
+    airport: false,
+    fuelPriceE95: 0,
+    fuelPriceDiesel: 0,
+    consumptionOverride: 0,
+    consumptionOverrideEnabled: false,
+    discountCitybeePercent: 50,
+    discountCitybeeMinutes: 20,
+  });
+  const ctx = { ...base, driveDayMin: 10, driveNightMin: 0, parkDayMin: 0, parkNightMin: 0 };
+
+  const priced = computeOptionPrice(ctx, option);
+  assert.equal(priced.ok, true);
+  assert.equal(priced.total_eur, 0);
+  assert.equal(priced.breakdown.discount_eur, -10);
+});
+
 test('TSV parsing + normalizeData produce expected structures', () => {
   const providersTsv = [
     'provider_id\tprovider_name\tnight_start\tnight_end',

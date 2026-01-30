@@ -732,8 +732,10 @@ function setDefaultInputs() {
   $('discountCitybeeMinutes').value = '0';
   $('discountBolt').value = '0';
   $('q').value = '';
-
-  const discountsSection = document.querySelector('.collapsible');
+  $('providerFilter').value = '';
+  $('snowboardFilter').checked = false;
+  $('limit').value = '50';
+  applySelectedOptionTypesToDom(['PAYG', 'PACKAGE', 'DAILY']);
 }
 
 function openDiscountsIfAnySet() {

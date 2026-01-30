@@ -275,6 +275,14 @@ export function computeOptionPrice(ctx, option, vehicle) {
     totalAfterDiscount = roundToCents(totalAfterDiscount - timeDiscountAmount);
   }
 
+  const minFloor = minTotal != null ? roundToCents(minTotal + feesC + airportC + fuelC) : 0;
+  if (totalAfterDiscount < minFloor) {
+    totalAfterDiscount = minFloor;
+  } else if (totalAfterDiscount < 0) {
+    totalAfterDiscount = 0;
+  }
+  discountEur = subtotalWithFees - totalAfterDiscount;
+
   const totalEur = roundToCents(totalAfterDiscount);
 
   const timeTooltip = (() => {
