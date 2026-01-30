@@ -132,6 +132,10 @@ function snapshotInputsFromDom() {
     fuelPriceE95: $('fuelPriceE95').value,
     fuelPriceDiesel: $('fuelPriceDiesel').value,
     consumptionOverride: $('consumptionOverride').value,
+    discountCarguru: $('discountCarguru').value,
+    discountCitybeePercent: $('discountCitybeePercent').value,
+    discountCitybeeMinutes: $('discountCitybeeMinutes').value,
+    discountBolt: $('discountBolt').value,
     q: $('q').value,
     providerFilter: $('providerFilter').value,
     snowboardFilter: $('snowboardFilter').checked,
@@ -158,6 +162,10 @@ function applyInputsToDom(snapshot) {
   if (snapshot.fuelPriceE95 != null) $('fuelPriceE95').value = String(snapshot.fuelPriceE95);
   if (snapshot.fuelPriceDiesel != null) $('fuelPriceDiesel').value = String(snapshot.fuelPriceDiesel);
   if (snapshot.consumptionOverride != null) $('consumptionOverride').value = String(snapshot.consumptionOverride);
+  if (snapshot.discountCarguru != null) $('discountCarguru').value = String(snapshot.discountCarguru);
+  if (snapshot.discountCitybeePercent != null) $('discountCitybeePercent').value = String(snapshot.discountCitybeePercent);
+  if (snapshot.discountCitybeeMinutes != null) $('discountCitybeeMinutes').value = String(snapshot.discountCitybeeMinutes);
+  if (snapshot.discountBolt != null) $('discountBolt').value = String(snapshot.discountBolt);
   if (typeof snapshot.q === 'string') $('q').value = snapshot.q;
   if (typeof snapshot.providerFilter === 'string') $('providerFilter').value = snapshot.providerFilter;
   if (typeof snapshot.snowboardFilter === 'boolean') $('snowboardFilter').checked = snapshot.snowboardFilter;
@@ -201,6 +209,18 @@ function buildContextFromInputs(data) {
   const consumptionOverride = Number($('consumptionOverride').value || 0);
   const consumptionOverrideEnabled = $('consumptionOverrideEnabled').checked;
 
+  const clampDiscount = (val) => {
+    const v = Number(val) || 0;
+    if (v < 0) return 0;
+    if (v > 99) return 99;
+    return v;
+  };
+
+  const discountCarguru = clampDiscount($('discountCarguru').value);
+  const discountCitybeePercent = clampDiscount($('discountCitybeePercent').value);
+  const discountCitybeeMinutes = Math.max(0, Math.min(1440, Number($('discountCitybeeMinutes').value) || 0));
+  const discountBolt = clampDiscount($('discountBolt').value);
+
   return createBaseContext({
     start,
     totalMin,
@@ -211,6 +231,10 @@ function buildContextFromInputs(data) {
     fuelPriceDiesel,
     consumptionOverride,
     consumptionOverrideEnabled,
+    discountCarguru,
+    discountCitybeePercent,
+    discountCitybeeMinutes,
+    discountBolt,
   });
 }
 
@@ -363,6 +387,7 @@ function renderResults({ data, ctx, computed, query, providerFilter }) {
             ${kv(t('label_fuel'), row.breakdown.fuel_eur)}
             ${Number(row.breakdown.min_added_eur || 0) > 0 ? kv(t('label_min_added'), Number(row.breakdown.min_added_eur || 0)) : ''}
             ${Number(row.breakdown.cap_saved_eur || 0) > 0 ? kv(t('label_time_cap_saved'), -Number(row.breakdown.cap_saved_eur || 0)) : ''}
+            ${Number(row.breakdown.discount_eur || 0) < 0 ? kv(t('label_discount'), row.breakdown.discount_eur) : ''}
           </div>
           <div class="calcLine"><code>${escapeHtml(formatCalcLine(row.breakdown))}</code></div>
         </details>
@@ -702,11 +727,26 @@ function setDefaultInputs() {
   $('fuelPriceDiesel').value = '1.70';
   $('consumptionOverride').value = '8';
   $('consumptionOverrideEnabled').checked = false;
+  $('discountCarguru').value = '0';
+  $('discountCitybeePercent').value = '0';
+  $('discountCitybeeMinutes').value = '0';
+  $('discountBolt').value = '0';
   $('q').value = '';
-  $('providerFilter').value = '';
-  $('snowboardFilter').checked = false;
-  $('limit').value = '50';
-  applySelectedOptionTypesToDom(['PAYG', 'PACKAGE', 'DAILY']);
+
+  const discountsSection = document.querySelector('.collapsible');
+}
+
+function openDiscountsIfAnySet() {
+  const hasDiscount =
+    (Number($('discountCarguru').value) || 0) > 0 ||
+    (Number($('discountCitybeePercent').value) || 0) > 0 ||
+    (Number($('discountCitybeeMinutes').value) || 0) > 0 ||
+    (Number($('discountBolt').value) || 0) > 0;
+  const section = document.querySelector('.collapsible');
+  if (section) {
+    if (hasDiscount) section.setAttribute('open', '');
+    else section.removeAttribute('open');
+  }
 }
 
 function restoreInputsOrDefaults() {
@@ -717,20 +757,23 @@ function restoreInputsOrDefaults() {
   }
   setDefaultInputs();
   applyInputsToDom(saved);
+  openDiscountsIfAnySet();
 }
 
 function wireInputs(defaults) {
   const onChange = () => {
     saveInputsToLocalStorage(snapshotInputsFromDom());
+    openDiscountsIfAnySet();
     recalc(defaults);
   };
-  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPriceE95','fuelPriceDiesel','consumptionOverride','consumptionOverrideEnabled','q','providerFilter','snowboardFilter','limit']) {
+  for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPriceE95','fuelPriceDiesel','consumptionOverride','consumptionOverrideEnabled','discountCarguru','discountCitybeePercent','discountCitybeeMinutes','discountBolt','q','providerFilter','snowboardFilter','limit']) {
     $(id).addEventListener('input', onChange);
     $(id).addEventListener('change', onChange);
   }
   $('btn-reset').addEventListener('click', () => {
     setDefaultInputs();
     saveInputsToLocalStorage(snapshotInputsFromDom());
+    openDiscountsIfAnySet();
     recalc(defaults);
   });
 }

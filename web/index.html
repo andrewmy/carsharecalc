@@ -151,6 +151,41 @@
             </div>
             <div class="field__hint" data-i18n="fuel_hint">Fuel cost is added only when fuel is not included.</div>
           </div>
+
+          <details class="collapsible">
+            <summary data-i18n="discounts_header">Discounts</summary>
+            <div class="grid">
+              <div class="field">
+                <div class="field__label" data-i18n="discount_carguru">CarGuru % discount</div>
+                <div style="display:flex;gap:4px;">
+                  <input id="discountCarguru" type="number" min="0" max="99" step="1" value="0" placeholder="15" style="flex:1" />
+                  <span style="color:var(--muted);font-size:13px;padding-top:10px;">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field__label" data-i18n="discount_bolt">Bolt Drive % discount</div>
+                <div style="display:flex;gap:4px;">
+                  <input id="discountBolt" type="number" min="0" max="99" step="1" value="0" placeholder="50" style="flex:1" />
+                  <span style="color:var(--muted);font-size:13px;padding-top:10px;">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field__label" data-i18n="discount_citybee_percent">CityBee % discount</div>
+                <div style="display:flex;gap:4px;">
+                  <input id="discountCitybeePercent" type="number" min="0" max="99" step="1" value="0" placeholder="10" style="flex:1" />
+                  <span style="color:var(--muted);font-size:13px;padding-top:10px;">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="field__label" data-i18n="discount_citybee_minutes">CityBee minutes off</div>
+                <div style="display:flex;gap:4px;">
+                  <input id="discountCitybeeMinutes" type="number" min="0" max="1440" step="1" value="0" placeholder="10" style="flex:1" />
+                  <span style="color:var(--muted);font-size:13px;padding-top:10px;">min</span>
+                </div>
+              </div>
+            </div>
+            <div class="field__hint" data-i18n="discounts_hint">Enter values (e.g., 15 for 15% off, 10 for 10 minutes off).</div>
+          </details>
         </form>
       </section>
 

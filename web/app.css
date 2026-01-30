@@ -398,6 +398,28 @@ code{font-family:var(--mono);font-size:.92em;color:var(--accent)}
 }
 .details[open] > summary:after{content:"▴"}
 .detailsGrid{margin-top:10px;display:grid;grid-template-columns: repeat(3, minmax(0,1fr));gap:8px}
+
+.collapsible{margin-top:12px;grid-column: span 12}
+.collapsible > summary{
+  cursor:pointer;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  list-style:none;
+  padding:8px 0;
+  border-bottom:1px solid var(--borderSubtle);
+}
+.collapsible > summary:hover{color:var(--accent)}
+.collapsible > summary::-webkit-details-marker{display:none}
+.collapsible > summary:after{
+  content:"▾";
+  float:right;
+  opacity:.6;
+  font-size:12px;
+}
+.collapsible[open] > summary:after{content:"▴"}
+.collapsible[open] > summary{border-bottom:none}
+.collapsible .grid{margin-top:12px}
 .kv{padding:8px;border-radius:10px;border:1px solid var(--borderSubtle);background: var(--kvBg)}
 .kv .k{font-size:11px;color:var(--muted)}
 .kv .v{font-size:14px;margin-top:2px;font-variant-numeric: tabular-nums}

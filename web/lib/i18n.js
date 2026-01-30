@@ -18,6 +18,15 @@ const STRINGS = {
     estimate_hint: 'Pieņemts vienvirziena brauciens. Ja plānojat atgriezties, pieskaitiet atpakaļceļa laiku/attālumu.',
     estimate_hint2: 'Nakts tarifi atkarīgi no vietējā laika (izmanto ierīces laika joslu).',
 
+    // Discounts
+    discounts_header: 'Atlaides',
+    discounts_hint: 'Ievadiet savas atlaides (piem., 15 = 15%, 10 = 10 minūtes).',
+    discount_carguru: 'CarGuru % atlaide',
+    discount_citybee_percent: 'CityBee % atlaide',
+    discount_citybee_minutes: 'CityBee minūšu atlaide',
+    discount_bolt: 'Bolt Drive % atlaide',
+    discount_breakdown: 'Atlaides',
+
     start_label: 'Sākuma laiks (jūsu ierīcē)',
     start_hint: 'Braucieniem Rīgā iestatiet ierīces laika joslu uz Europe/Riga, lai nakts tarifi būtu precīzi.',
 
@@ -84,6 +93,7 @@ const STRINGS = {
     label_fuel: 'Degviela',
     label_min_added: 'Min. piemaksa',
     label_time_cap_saved: 'Ietaupīts (laika limits)',
+    label_discount: 'Atlaide',
 
     // Row hint
     hint_package: 'Pakete',
@@ -166,6 +176,15 @@ const STRINGS = {
     estimate_hint: 'One-way assumed. If you plan to return, add return time/distance to the inputs.',
     estimate_hint2: 'Night pricing depends on local time (uses your device timezone).',
 
+    // Discounts
+    discounts_header: 'Discounts',
+    discounts_hint: 'Enter values (e.g., 15 for 15% off, 10 for 10 minutes off).',
+    discount_carguru: 'CarGuru % discount',
+    discount_citybee_percent: 'CityBee % discount',
+    discount_citybee_minutes: 'CityBee minutes off',
+    discount_bolt: 'Bolt Drive % discount',
+    discount_breakdown: 'Discount',
+
     start_label: 'Start time (your device)',
     start_hint: 'For Riga trips, set your device timezone to Europe/Riga for accurate night rates.',
 
@@ -229,6 +248,7 @@ const STRINGS = {
     label_fuel: 'Fuel',
     label_min_added: 'Min added',
     label_time_cap_saved: 'Time cap saved',
+    label_discount: 'Discount',
 
     hint_package: 'Package',
     hint_daily: 'Daily',

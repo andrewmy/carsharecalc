@@ -241,8 +241,41 @@ export function computeOptionPrice(ctx, option, vehicle) {
   const feesC = roundToCents(feesEur);
   const airportC = roundToCents(airportEur);
   const fuelC = roundToCents(fuelEur);
+ 
+  const subtotalWithoutFees = roundToCents(tripC + planC + timeC + kmC + minAddedC + airportC + fuelC);
+  const subtotalWithFees = roundToCents(subtotalWithoutFees + feesC);
+ 
+  let discountPercent = 0;
+  let discountMinutes = 0;
+  let discountEur = 0;
 
-  const totalEur = roundToCents(tripC + planC + timeC + kmC + minAddedC + feesC + airportC + fuelC);
+  if (providerId === 'carguru') {
+    discountPercent = -(ctx.discountCarguru || 0);
+  } else if (providerId === 'citybee') {
+    discountPercent = -(ctx.discountCitybeePercent || 0);
+    discountMinutes = -(ctx.discountCitybeeMinutes || 0);
+  } else if (providerId === 'bolt') {
+    discountPercent = -(ctx.discountBolt || 0);
+  }
+ 
+  let totalAfterDiscount = subtotalWithFees;
+ 
+  if (discountPercent !== 0) {
+    const discountAmount = subtotalWithFees * (Math.abs(discountPercent) / 100);
+    discountEur += discountAmount;
+    totalAfterDiscount = roundToCents(subtotalWithFees - discountAmount);
+  }
+ 
+  if (discountMinutes !== 0 && timeC > 0) {
+    const minutesOff = Math.abs(discountMinutes);
+    const totalMin = ctx.totalMin || 1;
+    const timeDiscountProportion = Math.min(1, minutesOff / totalMin);
+    const timeDiscountAmount = timeC * timeDiscountProportion;
+    discountEur += timeDiscountAmount;
+    totalAfterDiscount = roundToCents(totalAfterDiscount - timeDiscountAmount);
+  }
+
+  const totalEur = roundToCents(totalAfterDiscount);
 
   const timeTooltip = (() => {
     const lines = [];
@@ -298,6 +331,7 @@ export function computeOptionPrice(ctx, option, vehicle) {
       airport_eur: airportC,
       fuel_eur: fuelC,
       cap_saved_eur: roundToCents(capSavedEur),
+      discount_eur: -roundToCents(discountEur),
       total_eur: totalEur,
       labels: {
         trip: 'Trip fee',
@@ -305,6 +339,7 @@ export function computeOptionPrice(ctx, option, vehicle) {
         time: timeLabel,
         km: 'Km',
         fees: 'Fees',
+        discount: 'Discount',
       },
       meta: {
         option_type: optionType,
@@ -344,6 +379,8 @@ export function computeOptionPrice(ctx, option, vehicle) {
         fees_reservation_eur: reservation,
         fees_fixed_eur: fixed,
         fees_fallback_applied: false,
+        discount_percent: discountPercent,
+        discount_minutes: discountMinutes,
       },
       tooltips: {
         trip: tripTooltip,
@@ -366,6 +403,10 @@ export function createBaseContext({
   fuelPriceDiesel,
   consumptionOverride,
   consumptionOverrideEnabled,
+  discountCarguru = 0,
+  discountCitybeePercent = 0,
+  discountCitybeeMinutes = 0,
+  discountBolt = 0,
 }) {
   const end = new Date(start.getTime() + totalMin * 60000);
   const days = Math.max(1, Math.ceil(totalMin / 1440));
@@ -381,6 +422,10 @@ export function createBaseContext({
     fuelPriceDiesel: Number(fuelPriceDiesel || 0),
     consumptionOverride: Number(consumptionOverride || 0),
     consumptionOverrideEnabled: !!consumptionOverrideEnabled,
+    discountCarguru: Number(discountCarguru || 0),
+    discountCitybeePercent: Number(discountCitybeePercent || 0),
+    discountCitybeeMinutes: Number(discountCitybeeMinutes || 0),
+    discountBolt: Number(discountBolt || 0),
     days,
   };
 }
