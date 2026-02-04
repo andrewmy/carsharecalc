@@ -18,6 +18,17 @@ Refreshes `web/data/options.tsv` from public sources (CarGuru + CityBee) and kee
 
 - `uv run python scripts/import_options.py`
 
+## `carguru_tools.py`
+
+Small helper for fetching/inspecting CarGuru public web API payloads (useful for debugging tariff semantics like “Prepaid 24h”).
+
+- Fetch `rate/short` JSON:
+  - `uv run python scripts/carguru_tools.py fetch-rate-short`
+- Print a Prepaid 24h table from saved JSON:
+  - `uv run python scripts/carguru_tools.py report-prepaid-24h`
+- Fetch + print a decoded article (e.g., id 476):
+  - `uv run python scripts/carguru_tools.py fetch-article --id 476 --print-plain`
+
 ## `snowboard_queue.py`
 
 Prints a PR-ready checklist of vehicles where `snowboard_fit` is blank in `web/data/vehicles.tsv`.
