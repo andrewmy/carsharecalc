@@ -292,7 +292,52 @@ def parse_carguru_options_from_rate_short(obj: object) -> tuple[list[OptionRow],
                 except Exception:
                     min_total = min_day or min_night or ""
 
+            periods = rate.get("period") or []
             note = "Imported from CarGuru public web API; period bundles modeled as packages."
+
+            # Special-case: CarGuru "Prepaid 24h" is priced per 24h block plus per-km, and repeats per started 24h.
+            # Model it as DAILY to correctly scale the base price by ceil(total_min/1440), and to avoid adding our
+            # default CarGuru service fee (the public API often omits costService for these).
+            if "prepaid 24h" in rate_title.lower() and isinstance(periods, list):
+                daily_cost = ""
+                for p in periods:
+                    if not isinstance(p, dict):
+                        continue
+                    if str((p.get("time") or "")).strip().lower() != "1d":
+                        continue
+                    daily_cost = parse_money(p.get("cost"))
+                    if daily_cost:
+                        break
+                if daily_cost:
+                    options.append(
+                        OptionRow(
+                            provider_id="carguru",
+                            vehicle_id=vehicle_id,
+                            option_id=f"{vehicle_id}_{rate_slug}_daily",
+                            option_name=f"{title} — {rate_title} (24h blocks)",
+                            option_type="DAILY",
+                            fixed_fee_eur=service_fee or "0",
+                            reservation_fee_eur=reservation_fee or "0",
+                            trip_fee_eur=start_fee or "0",
+                            min_total_eur=min_total,
+                            drive_day_min_rate_eur=drive_day,
+                            drive_night_min_rate_eur=drive_night or drive_day,
+                            park_day_min_rate_eur=park_day or drive_day,
+                            park_night_min_rate_eur=park_night or park_day or drive_night or drive_day,
+                            km_rate_eur=km_over,
+                            included_km=included_km or "0",
+                            daily_price_eur=daily_cost,
+                            daily_included_km="0",
+                            daily_unlimited_km="FALSE",
+                            daily_over_km_rate_eur=km_over,
+                            fuel_included="TRUE",
+                            parking_included="TRUE",
+                            source_url="https://carguru.lv/article/476",
+                            notes=note + " Prepaid 24h modeled as daily 24h blocks + per-km.",
+                        )
+                    )
+                    continue
+
             payg = OptionRow(
                 provider_id="carguru",
                 vehicle_id=vehicle_id,
@@ -316,7 +361,6 @@ def parse_carguru_options_from_rate_short(obj: object) -> tuple[list[OptionRow],
             )
             options.append(payg)
 
-            periods = rate.get("period") or []
             if isinstance(periods, list):
                 for p in periods:
                     if not isinstance(p, dict):
