@@ -9,6 +9,32 @@ const LS_LANG_KEY = 'carcalc.web.lang.v1';
 
 function $(id) { return document.getElementById(id); }
 
+function formatMinutesAsHHMM(totalMin) {
+  const n = Math.max(0, Math.round(Number(totalMin) || 0));
+  const h = Math.floor(n / 60);
+  const m = n % 60;
+  return `${h}:${String(m).padStart(2, '0')}`;
+}
+
+function parseDurationToMinutesSafe(text) {
+  try {
+    return Math.max(0, parseDurationToMinutes(text));
+  } catch {
+    return null;
+  }
+}
+
+function expandRangeMaxToFit(el, neededValue, { roundTo = 1, softCap = 100000 } = {}) {
+  if (!el) return;
+  const needed = Number(neededValue);
+  if (!(needed >= 0)) return;
+  const curMax = Number(el.max || 0) || 0;
+  if (needed <= curMax) return;
+
+  const target = Math.min(softCap, Math.ceil(needed / roundTo) * roundTo);
+  el.max = String(Math.max(curMax, target));
+}
+
 function applyTranslations() {
   document.title = t('title');
   for (const el of document.querySelectorAll('[data-i18n]')) {
@@ -744,11 +770,127 @@ function openDiscountsIfAnySet() {
     (Number($('discountCitybeePercent').value) || 0) > 0 ||
     (Number($('discountCitybeeMinutes').value) || 0) > 0 ||
     (Number($('discountBolt').value) || 0) > 0;
-  const section = document.querySelector('.collapsible');
+  const section = $('discounts');
   if (section) {
     if (hasDiscount) section.setAttribute('open', '');
     else section.removeAttribute('open');
   }
+}
+
+function syncQuickExploreFromDom() {
+  const root = $('quickExplore');
+  if (!root) return;
+
+  const totalEl = $('qeTotalMin');
+  const parkingEl = $('qeParkingMin');
+  const distEl = $('qeDistanceKm');
+  const totalText = $('qeTotalText');
+  const parkingText = $('qeParkingText');
+  const distText = $('qeDistanceText');
+
+  if (!totalEl || !parkingEl || !distEl || !totalText || !parkingText || !distText) return;
+
+  const totalMin = parseDurationToMinutesSafe($('totalTime')?.value);
+  const parkingMin = parseDurationToMinutesSafe($('parkingTime')?.value);
+  const distKm = Number($('distanceKm')?.value);
+
+  // Avoid clobbering while user is typing an invalid duration.
+  if (totalMin != null) {
+    expandRangeMaxToFit(totalEl, totalMin, { roundTo: 60, softCap: 20160 }); // up to 14d
+    const min = Number(totalEl.min || 0) || 0;
+    const max = Number(totalEl.max || 0) || 4320;
+    const clamped = Math.max(min, Math.min(max, totalMin));
+    totalEl.value = String(clamped);
+    totalText.textContent = formatMinutesAsHHMM(clamped);
+
+    parkingEl.max = String(clamped);
+    if (parkingMin != null) {
+      const pClamped = Math.max(0, Math.min(clamped, parkingMin));
+      parkingEl.value = String(pClamped);
+      parkingText.textContent = formatMinutesAsHHMM(pClamped);
+    } else {
+      const pCur = Number(parkingEl.value || 0) || 0;
+      const pClamped = Math.max(0, Math.min(clamped, pCur));
+      parkingEl.value = String(pClamped);
+      parkingText.textContent = formatMinutesAsHHMM(pClamped);
+    }
+  }
+
+  if (distKm === distKm) {
+    const distRounded = Math.max(0, ceilInt(distKm));
+    expandRangeMaxToFit(distEl, distRounded, { roundTo: 100, softCap: 2000 });
+    const min = Number(distEl.min || 0) || 0;
+    const max = Number(distEl.max || 0) || 300;
+    const clamped = Math.max(min, Math.min(max, distRounded));
+    distEl.value = String(clamped);
+    distText.textContent = `${clamped} km`;
+  }
+}
+
+function applyQuickExplorePatch(defaults, patch) {
+  if (patch.totalMin != null) $('totalTime').value = formatMinutesAsHHMM(patch.totalMin);
+  if (patch.parkingMin != null) $('parkingTime').value = formatMinutesAsHHMM(patch.parkingMin);
+  if (patch.distKm != null) $('distanceKm').value = String(patch.distKm);
+  if (patch.airport != null) $('airport').checked = !!patch.airport;
+
+  saveInputsToLocalStorage(snapshotInputsFromDom());
+  openDiscountsIfAnySet();
+  syncQuickExploreFromDom();
+  recalc(defaults);
+}
+
+function wireQuickExplore(defaults) {
+  const root = $('quickExplore');
+  if (!root) return;
+
+  const totalEl = $('qeTotalMin');
+  const parkingEl = $('qeParkingMin');
+  const distEl = $('qeDistanceKm');
+  if (!totalEl || !parkingEl || !distEl) return;
+
+  const presets = {
+    quick_hop: { totalMin: 20, parkingMin: 0, distKm: 3, airport: false },
+    errands: { totalMin: 90, parkingMin: 30, distKm: 18, airport: false },
+    airport: { totalMin: 90, parkingMin: 30, distKm: 14, airport: true },
+    day_trip: { totalMin: 600, parkingMin: 60, distKm: 120, airport: false },
+    vilnius_roundtrip: { totalMin: 1440, parkingMin: 960, distKm: 600, airport: false },
+  };
+
+  const clampParking = (totalMin, parkingMin) => Math.max(0, Math.min(totalMin, parkingMin));
+
+  totalEl.addEventListener('input', () => {
+    const totalMin = Math.max(0, Number(totalEl.value || 0) || 0);
+    const parkingMin = clampParking(totalMin, Number(parkingEl.value || 0) || 0);
+    const distKm = Math.max(0, Number(distEl.value || 0) || 0);
+    applyQuickExplorePatch(defaults, { totalMin, parkingMin, distKm });
+  });
+
+  parkingEl.addEventListener('input', () => {
+    const totalMin = parseDurationToMinutesSafe($('totalTime').value) ?? (Number(totalEl.value || 0) || 0);
+    const parkingMin = clampParking(totalMin, Number(parkingEl.value || 0) || 0);
+    applyQuickExplorePatch(defaults, { parkingMin });
+  });
+
+  distEl.addEventListener('input', () => {
+    const distKm = Math.max(0, Number(distEl.value || 0) || 0);
+    applyQuickExplorePatch(defaults, { distKm });
+  });
+
+  for (const btn of root.querySelectorAll('[data-qe-preset]')) {
+    btn.addEventListener('click', () => {
+      const key = String(btn.dataset.qePreset || '').trim();
+      const p = presets[key];
+      if (!p) return;
+      applyQuickExplorePatch(defaults, {
+        totalMin: p.totalMin,
+        parkingMin: p.parkingMin,
+        distKm: p.distKm,
+        airport: p.airport,
+      });
+    });
+  }
+
+  syncQuickExploreFromDom();
 }
 
 function restoreInputsOrDefaults() {
@@ -766,6 +908,7 @@ function wireInputs(defaults) {
   const onChange = () => {
     saveInputsToLocalStorage(snapshotInputsFromDom());
     openDiscountsIfAnySet();
+    syncQuickExploreFromDom();
     recalc(defaults);
   };
   for (const id of ['start','totalTime','parkingTime','distanceKm','airport','fuelPriceE95','fuelPriceDiesel','consumptionOverride','consumptionOverrideEnabled','discountCarguru','discountCitybeePercent','discountCitybeeMinutes','discountBolt','q','providerFilter','snowboardFilter','limit']) {
@@ -776,6 +919,7 @@ function wireInputs(defaults) {
     setDefaultInputs();
     saveInputsToLocalStorage(snapshotInputsFromDom());
     openDiscountsIfAnySet();
+    syncQuickExploreFromDom();
     recalc(defaults);
   });
 }
@@ -828,6 +972,7 @@ async function main() {
   wireClickableProviderPills(defaults);
   wireSnowboardTooltips();
   wireLanguageDropdown(defaults);
+  wireQuickExplore(defaults);
   wireInputs(defaults);
   recalc(defaults);
 }

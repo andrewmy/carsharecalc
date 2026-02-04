@@ -18,6 +18,18 @@ const STRINGS = {
     estimate_hint: 'Pieņemts vienvirziena brauciens. Ja plānojat atgriezties, pieskaitiet atpakaļceļa laiku/attālumu.',
     estimate_hint2: 'Nakts tarifi atkarīgi no vietējā laika (izmanto ierīces laika joslu).',
 
+    quick_explore_header: 'Ātrā plānošana',
+    quick_explore_hint: 'Slīdņi lieto 10 min / 1 km soli un sinhronizējas ar ievadiem.',
+    quick_total_label: 'Kopējais laiks',
+    quick_standstill_label: 'Stāvēšana',
+    quick_distance_label: 'Attālums',
+    quick_presets_label: 'Scenāriji:',
+    preset_quick_hop: 'Ātrs brauciens',
+    preset_errands: 'Darīšanas',
+    preset_airport: 'Lidosta',
+    preset_day_trip: 'Dienas brauciens',
+    preset_vilnius_roundtrip: 'Uz Viļņu un atpakaļ',
+
     // Discounts
     discounts_header: 'Atlaides',
     discounts_hint: 'Ievadiet savas atlaides (piem., 15 = 15%, 10 = 10 minūtes).',
@@ -175,6 +187,18 @@ const STRINGS = {
     estimate_title: 'Estimate a trip',
     estimate_hint: 'One-way assumed. If you plan to return, add return time/distance to the inputs.',
     estimate_hint2: 'Night pricing depends on local time (uses your device timezone).',
+
+    quick_explore_header: 'Quick explore',
+    quick_explore_hint: 'Sliders use 10 min / 1 km steps and sync with the inputs.',
+    quick_total_label: 'Total time',
+    quick_standstill_label: 'Standstill',
+    quick_distance_label: 'Distance',
+    quick_presets_label: 'Presets:',
+    preset_quick_hop: 'Quick hop',
+    preset_errands: 'Errands',
+    preset_airport: 'Airport',
+    preset_day_trip: 'Day trip',
+    preset_vilnius_roundtrip: 'To Vilnius and back',
 
     // Discounts
     discounts_header: 'Discounts',

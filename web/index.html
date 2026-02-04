@@ -100,6 +100,40 @@
         </div>
 
         <form id="inputs" class="grid" autocomplete="off">
+          <details id="quickExplore" class="collapsible quickExplore">
+            <summary data-i18n="quick_explore_header">Quick explore</summary>
+            <div class="muted quickExplore__hint" data-i18n="quick_explore_hint">Sliders use 10 min / 1 km steps and sync with the inputs.</div>
+
+            <div class="quickExplore__grid">
+              <div class="quickExplore__row">
+                <div class="quickExplore__label" data-i18n="quick_total_label">Total time</div>
+                <input id="qeTotalMin" type="range" min="0" max="4320" step="10" value="60" data-base-max="4320" />
+                <div class="quickExplore__value"><span id="qeTotalText">1:00</span></div>
+              </div>
+
+              <div class="quickExplore__row">
+                <div class="quickExplore__label" data-i18n="quick_standstill_label">Standstill</div>
+                <input id="qeParkingMin" type="range" min="0" max="60" step="10" value="0" />
+                <div class="quickExplore__value"><span id="qeParkingText">0:00</span></div>
+              </div>
+
+              <div class="quickExplore__row">
+                <div class="quickExplore__label" data-i18n="quick_distance_label">Distance</div>
+                <input id="qeDistanceKm" type="range" min="0" max="300" step="1" value="10" data-base-max="300" />
+                <div class="quickExplore__value"><span id="qeDistanceText">10 km</span></div>
+              </div>
+            </div>
+
+            <div class="quickExplore__presets">
+              <span class="muted quickExplore__presetsLabel" data-i18n="quick_presets_label">Presets:</span>
+              <button class="pill pill--link" type="button" data-qe-preset="quick_hop" data-i18n="preset_quick_hop">Quick hop</button>
+              <button class="pill pill--link" type="button" data-qe-preset="errands" data-i18n="preset_errands">Errands</button>
+              <button class="pill pill--link" type="button" data-qe-preset="airport" data-i18n="preset_airport">Airport</button>
+              <button class="pill pill--link" type="button" data-qe-preset="day_trip" data-i18n="preset_day_trip">Day trip</button>
+              <button class="pill pill--link" type="button" data-qe-preset="vilnius_roundtrip" data-i18n="preset_vilnius_roundtrip">To Vilnius and back</button>
+            </div>
+          </details>
+
           <label class="field">
             <span class="field__label" data-i18n="start_label">Start time (your device)</span>
             <input id="start" type="datetime-local" required />
@@ -152,7 +186,7 @@
             <div class="field__hint" data-i18n="fuel_hint">Fuel cost is added only when fuel is not included.</div>
           </div>
 
-          <details class="collapsible">
+          <details id="discounts" class="collapsible">
             <summary data-i18n="discounts_header">Discounts</summary>
             <div class="grid">
               <div class="field">
